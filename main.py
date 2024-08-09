@@ -1,8 +1,9 @@
 
 # seq_key = 412931
-# # 469085  # Aporva com justificativa de Custos
-# #412931   # Aprova com Justificativa da Fabrica
+# # 469085  400965 # Aporva com justificativa de Custos
+# #412931    # Aprova com Justificativa da Fabrica
 # #469085  #405019 #469085  # Substitua pelo número da ordem real 405019
+# 443254 variaçao IM X IC
 
 # Reinstala todas as dependencias
 # pip install -r requirements.txt
@@ -53,6 +54,18 @@
 
 # 412931 "Tivemos um aumento do custo real devido a uma maior utilizaçao das horas de execuçao de maquina. Tivemos que utilizar a maquina por mais tempo que o previsto"
 
+# PS C:\Users\ccerq\OneDrive\Documentos\Python Scripts\WebApprovalWo\WebApprovalWo> python app.py
+# PS C:\Users\ccerq\OneDrive\Documentos\Python Scripts\WebApprovalWo\web-frontend> npm start
+
+# git init
+# git add *
+# git commit -m "commit inicial2"
+# git remote add origin https://github.com/ccerquei2/ML_CostAnalysis_one.git
+# git branch -M main
+# git push -u origin main
+#
+
+
 # ############################################################################################
 # # Avalia se Ordem Segue para aprovação
 # # Ação	Descriçao_Ação
@@ -101,6 +114,7 @@ def main(seq_key, justificativa):
 
     decisao_aprovar = (json_avalia_limites[0]["Acao"])
     print(decisao_aprovar)
+
 
     if decisao_aprovar == 1 or decisao_aprovar == 3:
         print('Um ou mais valores extrapolaram os limites de aprovação via ''Agentes AI'', Segue detalhamento:\n', json_avalia_limites_str)

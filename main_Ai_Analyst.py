@@ -28,10 +28,10 @@ class AnaliseErros:
 
     def extrair_dados(self, SEQ_KEY):
         query = f"""
-        SELECT 
-            SEQ_KEY, ORDEM, VARIACAO_IMXIC, DIF_CUSTO_P_x_R, MAT_DIF_PERCENTUAL, 
-            TAXA_MAQUINA_FIXA, TAXA_MO_FIXA, TAXA_FIXA_VAR_MO, MO_VALOR, HR_MAQ_VALOR, 
-            HR_EXC_VLR, HR_CONFIG_VLR, MO_VARIACAO, EXTERNA_OPERACAO 
+        SELECT
+            SEQ_KEY, ORDEM, VARIACAO_IMXIC, DIF_CUSTO_P_x_R, MAT_DIF_PERCENTUAL,
+            TAXA_MAQUINA_FIXA, TAXA_MO_FIXA, TAXA_FIXA_VAR_MO, MO_VALOR, HR_MAQ_VALOR,
+            HR_EXC_VLR, HR_CONFIG_VLR, MO_VARIACAO, EXTERNA_OPERACAO
         FROM  CRPDTA.FNML481
         WHERE SEQ_KEY = {SEQ_KEY}
         ORDER BY ORDEM, SEQ_KEY
@@ -136,3 +136,5 @@ crew = Crew(
 )
 
 crew.kickoff()
+
+

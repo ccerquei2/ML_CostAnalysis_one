@@ -46,7 +46,6 @@ model1 = load_model()
 
 
 
-
 class PipeLineCoastJustify:
 
 
