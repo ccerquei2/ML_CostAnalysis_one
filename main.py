@@ -65,6 +65,19 @@
 # git push -u origin main
 #
 
+# C:\Users\ccerq\OneDrive\Documentos\Python Scripts\AIGroqAgente
+# Remove-Item -Recurse -Force .git
+# git init
+# git add *
+# git commit -m "commit main6"
+# git remote add origin https://github.com/ccerquei2/ML_CostAnalysis_one.git
+# git remote add origin https://github.com/ccerquei2/WebApprovalWo.git
+# git branch -M main6
+# git push -u origin main6
+
+
+# Geração do Executável com arquivos na pasta
+# pyinstaller --onedir --name AI_WO_Approval --hidden-import=embedchain --hidden-import=importlib_metadata --hidden-import=sklearn.ensemble._forest --add-data "C:\Users\ccerq\Envs\pythonProject1\ML_CostAnalysis\Lib\site-packages\embedchain-0.1.110.dist-info;embedchain-0.1.110.dist-info" --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis\crewai\translations\en.json;crewai/translations" --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis\best_random_forest_model.joblib;." main.py
 
 # ############################################################################################
 # # Avalia se Ordem Segue para aprovação
@@ -93,7 +106,7 @@ class Analise_WO:
         else:
             return None
 
-def main(seq_key, justificativa):
+def main(seq_key, justificativa, groq_model):
     classificaWo = Classify_WorkOrder.Analise()
     df = classificaWo.extrair_dados(seq_key)
 
@@ -122,14 +135,16 @@ def main(seq_key, justificativa):
         try_approve.insert_approval_result(seq_key,
                                            float(json_avalia_limites[0]['ORDEM']),
                                            decisao_aprovar,
-                                           'Um ou mais valores extrapolaram os limites de aprovação via Agentes AI Analistas de Custos',
+                                           'Um ou mais valores extrapolaram os limites de aprovação via Agentes AI',
                                            json_avalia_limites_str,
-                                           'Decisão de Validação: Não Validado')
+                                           'Decisão de Validação: Não Validado',
+                                           '')
 
     else:
         if predicao == 'APROVADO COM JUSTIFICATIVA SETOR CUSTOS':
             try_approve = Agents_PipeLine.PipeLineCoastJustify()
-            try_approve.cost_approval_decision(df, decisao_aprovar, json_avalia_limites_str)
+            # try_approve.cost_approval_decision(df, decisao_aprovar, json_avalia_limites_str)
+            try_approve.execute_with_retries2(df, '', decisao_aprovar, json_avalia_limites_str, None)
         else:
             if justificativa == None or justificativa == '':
                 try_approve = Agents_PipeLine.PipeLineCoastJustify()
@@ -138,7 +153,8 @@ def main(seq_key, justificativa):
                                                    decisao_aprovar,
                                                    'A analise da ordem requer uma Justificativa Plausivel da Fabrica para as Variações Observadas',
                                                    json_avalia_limites_str,
-                                                   'Decisão de Validação: Não Validado')
+                                                   'Decisão de Validação: Não Validado',
+                                                   '')
                 print('A analise da ordem requer uma Justificativa Plausivel da Fabrica para as Variações Observadas')
             else:
                 fab_justificativa = justificativa if justificativa else Analise_WO().buscar_justificativa_fabrica(seq_key)
@@ -146,12 +162,15 @@ def main(seq_key, justificativa):
                 print(resultado)
 
                 try_approve = Agents_PipeLine.PipeLineCoastJustify()
-                try_approve.approval_decision(df, fab_justificativa, decisao_aprovar, json_avalia_limites_str)
+                # try_approve.approval_decision(df, fab_justificativa, decisao_aprovar, json_avalia_limites_str)
+                try_approve.execute_with_retries2(df, fab_justificativa, decisao_aprovar, json_avalia_limites_str,
+                                                  groq_model)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Processar uma ordem de produção.')
     parser.add_argument('SEQ_KEY', type=int, help='O identificador da ordem de produção.')
     parser.add_argument('JUSTIFICATIVA', type=str, nargs='?', help='Justificativa para a diferença de custo da ordem.', default=None)
+    parser.add_argument('GROQ_MODEL', type=str, nargs='?', help='Modelo Preferencial Groq.', default=None)
 
     args = parser.parse_args()
-    main(args.SEQ_KEY, args.JUSTIFICATIVA)
+    main(args.SEQ_KEY, args.JUSTIFICATIVA, args.GROQ_MODEL)

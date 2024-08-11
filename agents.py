@@ -1,17 +1,49 @@
 from crewai import Agent
 from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 
-class ProductionOrderAgents():
-    def __init__(self):
-        self.llm = ChatGroq(
-                api_key="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",
-                # model="mixtral-8x7b-32768"
-                # model="Llama3-8b-8192"
-                model= "Llama3-70b-8192"
-                # model= "llama-3.1-70b-Versatile"
+#
+# class BaseAgent(self.groqmodel):
+#     def choice_llms(self):
+#         groq_llm = ChatGroq(
+#             api_key="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",
+#             # model="mixtral-8x7b-32768"
+#             # model="Llama3-8b-8192"
+#             # model="llama-3.1-70b-Versatile"
+#             model="Llama3-70b-8192"
+#             )
+#
+#         openai_llm = ChatOpenAI(
+#             api_key="sk-7m9omY3eybOG9QX5qyblR0MqT_ZlEjzy4aJ-m0NmOuT3BlbkFJmz7FZ8Yvk14cjpB7bi_p1eacdvnX6BuCiRFJ5NyrkA",
+#             model="gpt-4o-mini"
+#         )
+#         return groq_llm, openai_llm
+
+class BaseAgent:
+    def __init__(self, model_choice=None):
+        # Define o modelo a ser usado, ou o padrão se nenhum for especificado
+        self.model_choice = model_choice if model_choice else "Llama3-70b-8192"
+        self.groq_llm, self.openai_llm = self.choice_llms()
+
+    def choice_llms(self):
+        groq_llm = ChatGroq(
+            api_key="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",
+            model=self.model_choice  # Usa o modelo especificado ou o padrão
         )
 
-    def variation_analysis_agent(self):
+        openai_llm = ChatOpenAI(
+            api_key="sk-7m9omY3eybOG9QX5qyblR0MqT_ZlEjzy4aJ-m0NmOuT3BlbkFJmz7FZ8Yvk14cjpB7bi_p1eacdvnX6BuCiRFJ5NyrkA",
+            model="gpt-4o-mini"
+        )
+        return groq_llm, openai_llm
+
+    def get_llm(self):
+        # Retorna o modelo escolhido
+        return self.groq_llm
+
+
+class ProductionOrderAgents():
+     def variation_analysis_agent(self, model_llm):
         return Agent(
             role="Variation Analyst",
             goal="""
@@ -57,22 +89,15 @@ class ProductionOrderAgents():
                 condizentes com as maiores variações observadas na ordem.
                 """,
             verbose=True,
-            llm=self.llm,
+            llm=model_llm,
             max_iter=4,
         )
 
 
 
-class VariationReviewerAgents:
-    def __init__(self):
-        self.llm = ChatGroq(
-            api_key="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",
-            # model="mixtral-8x7b-32768"
-            # model="Llama3-8b-8192"
-            model="Llama3-70b-8192"
-            # model="llama-3.1-70b-Versatile"
-        )
-    def variation_reviewer_agent(self):
+class VariationReviewerAgents():
+
+    def variation_reviewer_agent(self, model_llm):
         return Agent(
             role="Variation Reviewer",
             goal="""
@@ -107,7 +132,7 @@ class VariationReviewerAgents:
                 e que as justificativas fornecidas sejam relevantes e expliquem o porque das variaçoes.
                 """,
             verbose=True,
-            llm=self.llm,
+            llm=model_llm,
             max_iter=4,
         )
 
@@ -115,17 +140,17 @@ class VariationReviewerAgents:
 
 
 class CostDecisionAgents():
-    def __init__(self):
-        self.llm = ChatGroq(
-                api_key="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",
-                # model="mixtral-8x7b-32768"
-                # model="Llama3-8b-8192"
-                model="Llama3-70b-8192"
+    # def __init__(self):
+    #     self.llm = ChatGroq(
+    #             api_key="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",
+    #             # model="mixtral-8x7b-32768"
+    #             # model="Llama3-8b-8192"
+    #             model="Llama3-70b-8192"
+    #
+    #     )
+    #
 
-        )
-
-
-    def cost_variation_analysis_agent(self):
+    def cost_variation_analysis_agent(self, model_llm):
         return Agent(
             role="Variation Analyst",
             goal="""
@@ -162,21 +187,21 @@ class CostDecisionAgents():
                 em justificativas precisas e baseadas nos dados observados, sem adicionar informações que não foram fornecidas.
             """,
             verbose=True,
-            llm=self.llm,
+            llm=model_llm,
             max_iter=4,
         )
 
 
 class CostVariationReviewerAgents:
-    def __init__(self):
-        self.llm = ChatGroq(
-            api_key="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",
-            # model="mixtral-8x7b-32768"
-            # model="Llama3-8b-8192"
-            model="Llama3-70b-8192"
-        )
+    # def __init__(self):
+    #     self.llm = ChatGroq(
+    #         api_key="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",
+    #         # model="mixtral-8x7b-32768"
+    #         # model="Llama3-8b-8192"
+    #         model="Llama3-70b-8192"
+    #     )
 
-    def cost_variation_reviewer_agent(self):
+    def cost_variation_reviewer_agent(self, model_llm):
         return Agent(
             role="Senior Cost Analyst Reviewer",
             goal="""
@@ -215,7 +240,7 @@ class CostVariationReviewerAgents:
 
                     """,
             verbose=True,
-            llm=self.llm,
+            llm=model_llm,
             max_iter=4,
         )
 

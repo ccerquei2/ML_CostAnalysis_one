@@ -1,6 +1,6 @@
 import time
 from crewai import Crew
-from agents import ProductionOrderAgents, VariationReviewerAgents, CostDecisionAgents, CostVariationReviewerAgents
+from agents import ProductionOrderAgents, VariationReviewerAgents, CostDecisionAgents, CostVariationReviewerAgents, BaseAgent
 from tasks import AnalyzeVariationTask, ReviewVariationTask, Cost_AnalyzeVariationTask, CostReviewVariationTask
 from datetime import datetime
 import pyodbc
@@ -12,8 +12,8 @@ import os
 import sys
 import joblib
 import json
-
-
+import concurrent.futures
+import signal
 
 def load_prompts():
     if hasattr(sys, '_MEIPASS'):
@@ -56,7 +56,7 @@ class PipeLineCoastJustify:
         return f"1{year:02d}{day_of_year:03d}"
 
     def insert_approval_result(self, seq_key, ordem, decisao_aprovar, agent_return, json_avalia_limites_str,
-                               approval_decision):
+                               approval_decision, what_llm, groq_model=None):
         # Conexão com o SQL Server
         conn_str = (
             "DRIVER={SQL Server};"
@@ -82,6 +82,8 @@ class PipeLineCoastJustify:
         julian_now = self.julian_date(now)
         gftday = now.strftime("%H%M%S")
 
+        if groq_model == None: groq_model = ''
+
         # Inserir os dados na tabela
         cursor.execute("""
             INSERT INTO CRPDTA.FN31112Z (
@@ -90,7 +92,7 @@ class PipeLineCoastJustify:
                 GFPID, GFUPMJ, GFTDAY
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, seq_key, ordem, gfn002, decisao_aprovar, approval_decision, agent_return, json_avalia_limites_str,
-                       '', 0, '', 0, 0, julian_now, 'AIAGENT1', 'PYTHONAI1', julian_now, gftday)
+                       what_llm, 0, groq_model, 0, 0, julian_now, 'AIAGENT1', 'PYTHONAI1', julian_now, gftday)
 
         # Confirmar a transação
         conn.commit()
@@ -101,28 +103,39 @@ class PipeLineCoastJustify:
 
 
 
+    #
+    # def execute_with_retries(self, crew, max_retries=3):
+    #     attempts = 0
+    #     while attempts < max_retries:
+    #         try:
+    #             result = crew.kickoff()
+    #             return result
+    #         except Exception as e:
+    #             if "iteration limit" in str(e) or "time limit" in str(e):
+    #                 print(f"Erro encontrado: {e}. Tentando novamente... ({attempts + 1}/{max_retries})")
+    #                 attempts += 1
+    #             else:
+    #                 raise e
+    #     raise Exception("Número máximo de tentativas atingido.")
 
-    def execute_with_retries(self, crew, max_retries=3):
-        attempts = 0
-        while attempts < max_retries:
-            try:
-                result = crew.kickoff()
-                return result
-            except Exception as e:
-                if "iteration limit" in str(e) or "time limit" in str(e):
-                    print(f"Erro encontrado: {e}. Tentando novamente... ({attempts + 1}/{max_retries})")
-                    attempts += 1
-                else:
-                    raise e
-        raise Exception("Número máximo de tentativas atingido.")
 
-    def approval_decision(self, df, justify, acao, limits_return):
+    def approval_decision2(self, df, justify, acao, what_llm, limits_return, groq_model=None):
+        # time.sleep(6)
         # Criação dos agentes
+
+        if groq_model == None:
+            model1 = BaseAgent()
+        else:
+            model1 = BaseAgent(groq_model)
+
+        available_models = model1.choice_llms()
+
         agents = ProductionOrderAgents()
         reviewer_agents = VariationReviewerAgents()
 
-        variation_analyzer = agents.variation_analysis_agent()
-        variation_reviewer = reviewer_agents.variation_reviewer_agent()
+        variation_analyzer = agents.variation_analysis_agent(available_models[what_llm])
+        variation_reviewer = reviewer_agents.variation_reviewer_agent(available_models[what_llm])
+        print("llma usada foi:", what_llm)
 
         tasks = AnalyzeVariationTask()
         review_tasks = ReviewVariationTask()
@@ -163,14 +176,16 @@ class PipeLineCoastJustify:
         )
 
         start_time = time.time()
-        results = self.execute_with_retries(crew)
+        results = crew.kickoff()
+        # results = self.execute_with_retries(crew)
+
         end_time = time.time()
         elapsed_time = end_time - start_time
 
         print(f"Crew kickoff took {elapsed_time} seconds.")
         print("Crew usage", crew.usage_metrics)
 
-        print("Resultado da Analise do Primeiro Agente:", results)
+        # print("Resultado da Analise do Primeiro Agente:", results)
 
         # Criação da tarefa de análise de variação
         analyze_task = review_tasks.review_variation(
@@ -191,43 +206,61 @@ class PipeLineCoastJustify:
 
         time.sleep(5)
         start_time = time.time()
-        review_results = self.execute_with_retries(crew)
+        # review_results = self.execute_with_retries(crew)
+        results = crew.kickoff()
         end_time = time.time()
         elapsed_time = end_time - start_time
 
-
-
         # Usando expressão regular para extrair a decisão de validação
-        match = re.search(r"Decisão de Validação: (Validado|Não Validado)", review_results)
+        match = re.search(r"Decisão de Validação: (Validado|Não Validado)", results)
         if match:
             decisao_aprovar = match.group(0)
             # print("Decisão de Aprovação:", decisao_aprovar)
         else:
             decisao_aprovar = "Decisão de Validação: Não Validado"
 
+        Justify_and_AgentReturn =  results + '\n\n\nJustificativa feita pela Fabrica: ' + justify
+
+        # Avoid insert error
+        if groq_model == None:
+            truncated_model_name = 'Standard Model'
+        else:
+            truncated_model_name = groq_model[:15] if len(groq_model) > 15 else groq_model
+
+
         self.insert_approval_result(float(df['SEQ_KEY'].iloc[0]),
                                     float(df['ORDEM'].iloc[0]),
                                     acao,
-                                    review_results,
+                                    Justify_and_AgentReturn,
                                     limits_return,
-                                    decisao_aprovar)
+                                    decisao_aprovar,
+                                    what_llm,
+                                    truncated_model_name)
 
-        # Exemplo de uso
-        print("Resultado da Analise do Segundo Agente:", review_results)
+
+        print("Resultado da Analise do Segundo Agente:", results)
         print("Decisão de Aprovação:", decisao_aprovar)
 
-        print("Resultado da Analise do Segundo Agente:", review_results)
+        print("Resultado da Analise do Segundo Agente:", results)
 
         print(f"Review crew kickoff took {elapsed_time} seconds.")
         print("Review crew usage", crew.usage_metrics)
 
-    def cost_approval_decision(self, df, acao, limits_return):
+        return results
+
+
+
+    def cost_approval_decision2(self, df, acao, what_llm, limits_return):
         # Criação dos agentes
+        model1 = BaseAgent()
+        available_models = model1.choice_llms()
+
         agents = CostDecisionAgents()
         reviewer_agents = CostVariationReviewerAgents()
 
-        variation_analyzer = agents.cost_variation_analysis_agent()
-        variation_reviewer = reviewer_agents.cost_variation_reviewer_agent()
+        variation_analyzer = agents.cost_variation_analysis_agent(available_models[what_llm])
+        variation_reviewer = reviewer_agents.cost_variation_reviewer_agent(available_models[what_llm])
+        print("llma usada foi:", what_llm)
 
         tasks = Cost_AnalyzeVariationTask()
         review_tasks = CostReviewVariationTask()
@@ -267,7 +300,8 @@ class PipeLineCoastJustify:
         )
 
         start_time = time.time()
-        results = self.execute_with_retries(crew)
+        results = crew.kickoff()
+        # results = self.execute_with_retries(crew)
         end_time = time.time()
         elapsed_time = end_time - start_time
 
@@ -295,13 +329,14 @@ class PipeLineCoastJustify:
 
         time.sleep(5)
         start_time = time.time()
-        review_results = self.execute_with_retries(crew)
+        results = crew.kickoff()
+        # review_results = self.execute_with_retries(crew)
         end_time = time.time()
         elapsed_time = end_time - start_time
 
 
         # Usando expressão regular para extrair a decisão de validação
-        match = re.search(r"Decisão de Validação: (Validado|Não Validado)", review_results)
+        match = re.search(r"Decisão de Validação: (Validado|Não Validado)", results)
         if match:
             decisao_aprovar = match.group(0)
             # print("Decisão de Aprovação:", decisao_aprovar)
@@ -311,11 +346,346 @@ class PipeLineCoastJustify:
         self.insert_approval_result(float(df['SEQ_KEY'].iloc[0]),
                                     float(df['ORDEM'].iloc[0]),
                                     acao,
-                                    review_results,
+                                    results,
                                     limits_return,
-                                    decisao_aprovar)
+                                    decisao_aprovar,
+                                    what_llm)
 
-        print("Resultado da Analise do Segundo Agente:", review_results)
+        print("Resultado da Analise do Segundo Agente:", results)
 
         print(f"Review crew kickoff took {elapsed_time} seconds.")
         print("Review crew usage", crew.usage_metrics)
+
+
+
+    def execute_with_retries2(self, df, justify, acao, limits_return, groqmodel=None, max_retries=3, max_time=120):
+        def try_llm(llm, retries):
+            attempts = 0
+            while attempts < retries:
+                start_time = time.time()  # Reinicia o tempo de início a cada tentativa
+                try:
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(self.approval_decision2, df, justify, acao, llm, limits_return, groqmodel)
+                        result = future.result(timeout=max_time)  # Cada tentativa tem o tempo total disponível
+                    return result  # Sucesso
+                except concurrent.futures.TimeoutError:
+                    print(f"Timeout ocorrido com LLM {llm}. Tentativa {attempts + 1}/{retries}.")
+                except Exception as e:
+                    print(f"Erro encontrado com LLM {llm}: {e}. Tentativa {attempts + 1}/{retries}.")
+                finally:
+                    executor.shutdown(wait=True)  # Garante que as threads sejam finalizadas
+
+                attempts += 1
+
+            # Se todas as tentativas falharem, retorna None
+            return None
+
+        def handle_llm_attempt(llm, llm_name, retries):
+            result = try_llm(llm, retries)
+            if result is not None:
+                print(f"Resultado da Análise com {llm_name}:", result)
+                return result
+            else:
+                print(f"Falha com {llm_name} após todas as tentativas.")
+                return None
+
+        try:
+            # Tenta o Groq primeiro
+            result = handle_llm_attempt(llm=0, llm_name="Groq", retries=max_retries)
+            if result is not None:
+                return result
+
+            # Tenta a contingência (OpenAI) após falhar com o Groq
+            result = handle_llm_attempt(llm=1, llm_name="OpenAI", retries=max_retries)
+            if result is not None:
+                return result
+
+            # Se falhar tanto com Groq quanto com OpenAI
+            print("Falha total: Nenhuma LLM conseguiu completar a tarefa após todas as tentativas.")
+            return None
+
+        finally:
+            print("Processo finalizado.")
+            os._exit(1)  # Encerra o programa de forma abrupta
+
+
+    # def execute_with_retries2(self, df, justify, acao, limits_return, groqmodel=None, max_retries=3, max_time=120 ):
+    #     def try_llm(llm, retries, max_time):
+    #         attempts = 0
+    #         while attempts < retries:
+    #             start_time = time.time()  # Reinicia o tempo de início a cada tentativa
+    #             try:
+    #                 with concurrent.futures.ThreadPoolExecutor() as executor:
+    #                     future = executor.submit(self.approval_decision2, df, justify, acao, llm, limits_return, groqmodel)
+    #                     result = future.result(timeout=max_time)  # Cada tentativa tem o tempo total disponível
+    #                 return result  # Sucesso
+    #             except (concurrent.futures.TimeoutError, Exception) as e:
+    #                 attempts += 1
+    #                 elapsed_time = time.time() - start_time  # Calcula o tempo decorrido para a tentativa atual
+    #                 print(f"Erro encontrado com LLM {llm}: {e}. Tentativa {attempts}/{retries}. "
+    #                       f"Tempo decorrido: {elapsed_time:.2f} segundos.")
+    #
+    #         # Se todas as tentativas falharem, retorna None
+    #         return None
+    #
+    #     def handle_llm_attempt(llm, llm_name, retries):
+    #         result = try_llm(llm, retries, max_time)
+    #         if result is not None:
+    #             print(f"Resultado da Análise com {llm_name}:", result)
+    #             return result
+    #         else:
+    #             print(f"Falha com {llm_name} após todas as tentativas.")
+    #             return None
+    #
+    #     try:
+    #         # Tenta o Groq primeiro
+    #         result = handle_llm_attempt(llm=0, llm_name="Groq", retries=max_retries)
+    #         if result is not None:
+    #             return result
+    #
+    #         # Tenta a contingência (OpenAI) após falhar com o Groq
+    #         result = handle_llm_attempt(llm=1, llm_name="OpenAI", retries=max_retries)
+    #         if result is not None:
+    #             return result
+    #
+    #         # Se falhar tanto com Groq quanto com OpenAI
+    #         print("Falha total: Nenhuma LLM conseguiu completar a tarefa após todas as tentativas.")
+    #         return None
+    #
+    #     finally:
+    #         # Adiciona uma limpeza final, se necessário
+    #         print("Processo finalizado.")
+    #
+
+
+    # def execute_with_retries(self, crew, max_retries=3, max_time=120):
+    #     attempts = 0
+    #     start_time = time.time()  # Registra o tempo de início
+    #
+    #     while attempts < max_retries:
+    #         try:
+    #             result = crew.kickoff()
+    #             return result
+    #         except Exception as e:
+    #             elapsed_time = time.time() - start_time  # Calcula o tempo decorrido
+    #
+    #             if elapsed_time > max_time:
+    #                 print(
+    #                     f"Erro: Tempo de execução excedido ({elapsed_time:.2f} segundos) ou máximo de tentativas atingido ({attempts + 1}/{max_retries}).")
+    #                 break
+    #
+    #             attempts += 1
+    #             print(f"Erro encontrado: {e}. Tentativa {attempts + 1}/{max_retries}.")
+    #
+    #     raise Exception("Erro: Tempo excedido ou número máximo de tentativas atingido.")
+    #
+
+    #
+    # def approval_decision(self, df, justify, acao, limits_return):
+    #     # Criação dos agentes
+    #
+    #     model1 = BaseAgent()
+    #     available_models = model1.choice_llms()
+    #
+    #     agents = ProductionOrderAgents()
+    #     reviewer_agents = VariationReviewerAgents()
+    #
+    #     variation_analyzer = agents.variation_analysis_agent(available_models[0])
+    #     variation_reviewer = reviewer_agents.variation_reviewer_agent(available_models[0])
+    #
+    #     tasks = AnalyzeVariationTask()
+    #     review_tasks = ReviewVariationTask()
+    #
+    #     analyze_variation_tasks = []
+    #     review_variation_tasks = []
+    #
+    #     order_details = {
+    #         'Material_Used': float(df['MAT_DIF_PERCENTUAL'].iloc[0]),
+    #         'Setup_Hours': float(df['HR_CONFIG_VLR'].iloc[0]),
+    #         'Labor_Hours': float(df['MO_VALOR'].iloc[0]),
+    #         'Machine_Hours': float(df['HR_MAQ_VALOR'].iloc[0]),
+    #         'External_Operation': float(df['EXTERNA_OPERACAO'].iloc[0]),
+    #         'Standard_x_Real': float(df['DIF_CUSTO_P_x_R'].iloc[0]),
+    #         'Variation_IMxIC': float(df['VARIACAO_IMXIC'].iloc[0]),
+    #         'Variation_Material': float(df['MAT_DIF_PERCENTUAL'].iloc[0]),
+    #         'Rate_Machine': float(df['TAXA_MAQUINA_FIXA'].iloc[0]),
+    #         'Rate_Labor': float(df['TAXA_MO_FIXA'].iloc[0]),
+    #         'Rate_Var_Labor': float(df['TAXA_FIXA_VAR_MO'].iloc[0]),
+    #         'Predicted_OUTCOME': df['Predicted_OUTCOME'].iloc[0],
+    #         'Factory_Justify': justify
+    #     }
+    #
+    #     # Criação da tarefa de análise de variação
+    #     analyze_task = tasks.analyze_variation(
+    #         agent=variation_analyzer,
+    #         order_details=order_details
+    #     )
+    #
+    #     # Adiciona a tarefa de análise ao crew
+    #     analyze_variation_tasks.append(analyze_task)
+    #
+    #     # Executa a análise de variação e obtém a decisão
+    #     crew = Crew(
+    #         agents=[variation_analyzer],
+    #         tasks=analyze_variation_tasks,
+    #         max_rpm=29
+    #     )
+    #
+    #     start_time = time.time()
+    #     results = self.execute_with_retries(crew)
+    #
+    #     end_time = time.time()
+    #     elapsed_time = end_time - start_time
+    #
+    #     print(f"Crew kickoff took {elapsed_time} seconds.")
+    #     print("Crew usage", crew.usage_metrics)
+    #
+    #     print("Resultado da Analise do Primeiro Agente:", results)
+    #
+    #     # Criação da tarefa de análise de variação
+    #     analyze_task = review_tasks.review_variation(
+    #         agent=variation_reviewer,
+    #         approval_decision=results,
+    #         order_details=order_details
+    #     )
+    #
+    #     # Adiciona a tarefa de análise ao crew
+    #     review_variation_tasks.append(analyze_task)
+    #
+    #     # Adiciona a tarefa de revisão ao crew
+    #     crew = Crew(
+    #         agents=[variation_reviewer],
+    #         tasks=review_variation_tasks,
+    #         max_rpm=29
+    #     )
+    #
+    #     time.sleep(5)
+    #     start_time = time.time()
+    #     review_results = self.execute_with_retries(crew)
+    #     end_time = time.time()
+    #     elapsed_time = end_time - start_time
+
+
+
+        # # Usando expressão regular para extrair a decisão de validação
+        # match = re.search(r"Decisão de Validação: (Validado|Não Validado)", review_results)
+        # if match:
+        #     decisao_aprovar = match.group(0)
+        #     # print("Decisão de Aprovação:", decisao_aprovar)
+        # else:
+        #     decisao_aprovar = "Decisão de Validação: Não Validado"
+        #
+        # self.insert_approval_result(float(df['SEQ_KEY'].iloc[0]),
+        #                             float(df['ORDEM'].iloc[0]),
+        #                             acao,
+        #                             review_results,
+        #                             limits_return,
+        #                             decisao_aprovar)
+        #
+        # # Exemplo de uso
+        # print("Resultado da Analise do Segundo Agente:", review_results)
+        # print("Decisão de Aprovação:", decisao_aprovar)
+        #
+        # print("Resultado da Analise do Segundo Agente:", review_results)
+        #
+        # print(f"Review crew kickoff took {elapsed_time} seconds.")
+        # print("Review crew usage", crew.usage_metrics)
+
+    # def cost_approval_decision(self, df, acao, limits_return):
+    #     # Criação dos agentes
+    #     agents = CostDecisionAgents()
+    #     reviewer_agents = CostVariationReviewerAgents()
+    #
+    #     variation_analyzer = agents.cost_variation_analysis_agent()
+    #     variation_reviewer = reviewer_agents.cost_variation_reviewer_agent()
+    #
+    #     tasks = Cost_AnalyzeVariationTask()
+    #     review_tasks = CostReviewVariationTask()
+    #
+    #     analyze_variation_tasks = []
+    #     review_variation_tasks = []
+    #
+    #     order_details = {
+    #         'Material_Used': float(df['MAT_DIF_PERCENTUAL'].iloc[0]),
+    #         'Setup_Hours': float(df['HR_CONFIG_VLR'].iloc[0]),
+    #         'Labor_Hours': float(df['MO_VALOR'].iloc[0]),
+    #         'Machine_Hours': float(df['HR_MAQ_VALOR'].iloc[0]),
+    #         'External_Operation': float(df['EXTERNA_OPERACAO'].iloc[0]),
+    #         'Standard_x_Real': float(df['DIF_CUSTO_P_x_R'].iloc[0]),
+    #         'Variation_IMxIC': float(df['VARIACAO_IMXIC'].iloc[0]),
+    #         'Variation_Material': float(df['MAT_DIF_PERCENTUAL'].iloc[0]),
+    #         'Rate_Machine': float(df['TAXA_MAQUINA_FIXA'].iloc[0]),
+    #         'Rate_Labor': float(df['TAXA_MO_FIXA'].iloc[0]),
+    #         'Rate_Var_Labor': float(df['TAXA_FIXA_VAR_MO'].iloc[0]),
+    #         'Predicted_OUTCOME': df['Predicted_OUTCOME'].iloc[0]
+    #     }
+    #
+    #     # Criação da tarefa de análise de variação
+    #     analyze_task = tasks.costanalyze_variation(
+    #         agent=variation_analyzer,
+    #         order_details=order_details
+    #     )
+    #
+    #     # Adiciona a tarefa de análise ao crew
+    #     analyze_variation_tasks.append(analyze_task)
+    #
+    #     # Executa a análise de variação e obtém a decisão
+    #     crew = Crew(
+    #         agents=[variation_analyzer],
+    #         tasks=analyze_variation_tasks,
+    #         max_rpm=29
+    #     )
+    #
+    #     start_time = time.time()
+    #     results = self.execute_with_retries(crew)
+    #     end_time = time.time()
+    #     elapsed_time = end_time - start_time
+    #
+    #     print(f"Crew kickoff took {elapsed_time} seconds.")
+    #     print("Crew usage", crew.usage_metrics)
+    #
+    #     print("Resultado da Analise do Primeiro Agente:", results)
+    #
+    #     # Criação da tarefa de análise de variação
+    #     analyze_task = review_tasks.cost_review_variation(
+    #         agent=variation_reviewer,
+    #         approval_decision=results,
+    #         order_details=order_details
+    #     )
+    #
+    #     # Adiciona a tarefa de análise ao crew
+    #     review_variation_tasks.append(analyze_task)
+    #
+    #     # Adiciona a tarefa de revisão ao crew
+    #     crew = Crew(
+    #         agents=[variation_reviewer],
+    #         tasks=review_variation_tasks,
+    #         max_rpm=29
+    #     )
+    #
+    #     time.sleep(5)
+    #     start_time = time.time()
+    #     review_results = self.execute_with_retries(crew)
+    #     end_time = time.time()
+    #     elapsed_time = end_time - start_time
+    #
+    #
+    #     # Usando expressão regular para extrair a decisão de validação
+    #     match = re.search(r"Decisão de Validação: (Validado|Não Validado)", review_results)
+    #     if match:
+    #         decisao_aprovar = match.group(0)
+    #         # print("Decisão de Aprovação:", decisao_aprovar)
+    #     else:
+    #         decisao_aprovar = "Decisão de Validação: Não Validado"
+    #
+    #     self.insert_approval_result(float(df['SEQ_KEY'].iloc[0]),
+    #                                 float(df['ORDEM'].iloc[0]),
+    #                                 acao,
+    #                                 review_results,
+    #                                 limits_return,
+    #                                 decisao_aprovar)
+    #
+    #     print("Resultado da Analise do Segundo Agente:", review_results)
+    #
+    #     print(f"Review crew kickoff took {elapsed_time} seconds.")
+    #     print("Review crew usage", crew.usage_metrics)
