@@ -1,0 +1,80 @@
+('C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+ 'Scripts\\ML_CostAnalysis3\\build\\AI_WO_Approval\\AI_WO_Approval.pkg',
+ {'BINARY': True,
+  'DATA': True,
+  'EXECUTABLE': True,
+  'EXTENSION': True,
+  'PYMODULE': True,
+  'PYSOURCE': True,
+  'PYZ': False,
+  'SPLASH': True,
+  'SYMLINK': False},
+ [('pyi-contents-directory _internal', '', 'OPTION'),
+  ('PYZ-00.pyz',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\build\\AI_WO_Approval\\PYZ-00.pyz',
+   'PYZ'),
+  ('struct',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\build\\AI_WO_Approval\\localpycs\\struct.pyc',
+   'PYMODULE'),
+  ('pyimod01_archive',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\build\\AI_WO_Approval\\localpycs\\pyimod01_archive.pyc',
+   'PYMODULE'),
+  ('pyimod02_importers',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\build\\AI_WO_Approval\\localpycs\\pyimod02_importers.pyc',
+   'PYMODULE'),
+  ('pyimod03_ctypes',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\build\\AI_WO_Approval\\localpycs\\pyimod03_ctypes.pyc',
+   'PYMODULE'),
+  ('pyimod04_pywin32',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\build\\AI_WO_Approval\\localpycs\\pyimod04_pywin32.pyc',
+   'PYMODULE'),
+  ('pyiboot01_bootstrap',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgutil',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgutil.py',
+   'PYSOURCE'),
+  ('pyi_rth_multiprocessing',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_multiprocessing.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgres',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgres.py',
+   'PYSOURCE'),
+  ('pyi_rth_setuptools',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_setuptools.py',
+   'PYSOURCE'),
+  ('pyi_rth_inspect',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py',
+   'PYSOURCE'),
+  ('pyi_rth_cryptography_openssl',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\hooks\\rthooks\\pyi_rth_cryptography_openssl.py',
+   'PYSOURCE'),
+  ('pyi_rth_tensorflow',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\hooks\\rthooks\\pyi_rth_tensorflow.py',
+   'PYSOURCE'),
+  ('main',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\main.py',
+   'PYSOURCE')],
+ 'python311.dll',
+ True,
+ False,
+ False,
+ [],
+ None,
+ None,
+ None)
