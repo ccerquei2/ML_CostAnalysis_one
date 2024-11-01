@@ -64,8 +64,8 @@ class PipeLineCoastJustify:
         # Conexão com o SQL Server
         conn_str = (
             "DRIVER={SQL Server};"
-            "SERVER=DBDEV;"
-            "DATABASE=JDE_CRP;"
+            "SERVER=ENTERPRISE;"
+            "DATABASE=JDE_PRODUCTION;"
             "UID=usercisp;"
             "PWD=Dcfsds!245"
 
@@ -76,7 +76,7 @@ class PipeLineCoastJustify:
         # Obter o próximo valor para GFN002
         cursor.execute("""
             SELECT ISNULL(MAX(GFN002), 0) + 1
-            FROM CRPDTA.FN31112Z
+            FROM PRODDTA.FN31112Z
             WHERE GFDOCO = ?
         """, ordem)
         gfn002 = cursor.fetchone()[0]
@@ -90,7 +90,7 @@ class PipeLineCoastJustify:
 
         # Inserir os dados na tabela
         cursor.execute("""
-            INSERT INTO CRPDTA.FN31112Z (
+            INSERT INTO PRODDTA.FN31112Z (
                 GFN001, GFDOCO, GFN002, GFN003, GFDES1, GFNOTTE, GFANSR,
                 GFURCD, GFURDT, GFURRF, GFURAT, GFURAB, GFCFGD, GFUSER,
                 GFPID, GFUPMJ, GFTDAY
@@ -382,7 +382,7 @@ class PipeLineCoastJustify:
                             future = executor.submit(self.approval_decision2, df, justify, acao, llm, limits_return, groqmodel)
                             result = future.result(timeout=max_time)  # Cada tentativa tem o tempo total disponível
 
-                        if acao == 2:
+                        if acao == 2 or acao == -2:
                             # future = self.cost_approval_decision2(df, acao, llm, limits_return, groqmodel)
                             future = executor.submit(self.cost_approval_decision2, df, acao, llm, limits_return,groqmodel)
                             result = future.result(timeout=max_time)  # Cada tentativa tem o tempo total disponível

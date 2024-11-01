@@ -97,7 +97,7 @@
  [],
  False,
  False,
- 1725134226,
+ 1730229241,
  [('run.exe',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',

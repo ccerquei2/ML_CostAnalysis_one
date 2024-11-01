@@ -12,8 +12,8 @@ llm = ChatGroq(
 
 class AnaliseErros:
     def __init__(self):
-        self.server = 'DBDEV'
-        self.database = 'JDE_CRP'
+        self.server = 'ENTERPRISE'
+        self.database = 'JDE_PRODUCTION'
         self.username = 'consultas_diretas'
         self.password = 'c_diretas'
 
@@ -26,13 +26,15 @@ class AnaliseErros:
             print("Error to connect to the database:", e)
             return None
 
+
+
     def extrair_dados(self, SEQ_KEY):
         query = f"""
         SELECT
             SEQ_KEY, ORDEM, VARIACAO_IMXIC, DIF_CUSTO_P_x_R, MAT_DIF_PERCENTUAL,
             TAXA_MAQUINA_FIXA, TAXA_MO_FIXA, TAXA_FIXA_VAR_MO, MO_VALOR, HR_MAQ_VALOR,
             HR_EXC_VLR, HR_CONFIG_VLR, MO_VARIACAO, EXTERNA_OPERACAO
-        FROM  CRPDTA.FNML481
+        FROM  PRODDTA.FNML481
         WHERE SEQ_KEY = {SEQ_KEY}
         ORDER BY ORDEM, SEQ_KEY
         """

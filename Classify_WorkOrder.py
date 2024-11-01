@@ -7,8 +7,8 @@
 #
 # class Analise:
 #     def __init__(self):
-#         self.server = 'DBDEV'
-#         self.database = 'JDE_CRP'
+#         self.server = 'ENTERPRISE'
+#         self.database = 'JDE_PRODUCTION'
 #         self.username = 'consultas_diretas'  # Substitua com seu usuário
 #         self.password = 'c_diretas'  # Substitua com sua senha
 #
@@ -30,7 +30,7 @@
 #             SEQ_KEY, ORDEM, VARIACAO_IMXIC = ABS(VARIACAO_IMXIC), DIF_CUSTO_P_x_R, MAT_DIF_PERCENTUAL,
 #             TAXA_MAQUINA_FIXA, TAXA_MO_FIXA, TAXA_FIXA_VAR_MO, MO_VALOR, HR_MAQ_VALOR,
 #             HR_EXC_VLR, HR_CONFIG_VLR, MO_VARIACAO, EXTERNA_OPERACAO
-#         FROM  CRPDTA.FNML481
+#         FROM  PRODDTA.FNML481
 #         WHERE SEQ_KEY = {SEQ_KEY}
 #         ORDER BY ORDEM, SEQ_KEY
 #         """
@@ -48,7 +48,7 @@
 #                     Acao = MAX(FAIXAS.Ação),
 #                     ORDEM = VALORES.ORDEM,
 #                     FAIXAS.Outcome,
-#                     Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM CRPDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
+#                     Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM PRODDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
 #                     VARIACAO_IMXIC        = MAX(ABS(VALORES.VARIACAO_IMXIC)),
 #                     LIMITE_VARIACAO_IMXIC = LIMITE.VARIACAO_IMXIC,
 #                     DIF_CUSTO_P_x_R        = MAX(ABS(VALORES.DIF_CUSTO_P_x_R)) ,
@@ -76,10 +76,10 @@
 #                     VAR_EM_REAIS        = MAX(ABS(VALORES.VAR_EM_REAIS)),
 #                     LIMITE_VAR_EM_REAIS = LIMITE.VAR_EM_REAIS
 #                 FROM
-#                         CRPDTA.FNML481 VALORES,
-#                         CRPDTA.FNML481L FAIXAS
+#                         PRODDTA.FNML481 VALORES,
+#                         PRODDTA.FNML481L FAIXAS
 #                         LEFT JOIN
-#                         CRPDTA.FNML481L LIMITE ON
+#                         PRODDTA.FNML481L LIMITE ON
 #                         LIMITE.AÇÃO IN ('1','3') AND
 #                         LIMITE.Outcome = FAIXAS.Outcome
 #
@@ -194,8 +194,8 @@ import json
 
 class Analise:
     def __init__(self):
-        self.server = 'DBDEV'
-        self.database = 'JDE_CRP'
+        self.server = 'ENTERPRISE'
+        self.database = 'JDE_PRODUCTION'
         self.username = 'consultas_diretas'  # Substitua com seu usuário
         self.password = 'c_diretas'  # Substitua com sua senha
         self.root_path = os.path.dirname(os.path.abspath(__file__))  # Caminho da pasta raiz do executável
@@ -212,13 +212,77 @@ class Analise:
         engine = create_engine(connection_url)
         return engine
 
+
+    def justificativa_fabrica(self, SEQ_KEY):
+        query = f"""                
+                /*******************************************************************************************************
+                1 - Validar se ordem não tem variações totais que impossibiltam a aprovaçção do custo
+                2 - Se predição determinar que a Fabrica Deverá justificar 	a variação, 
+                    "REQUER JUSTIFICATI FABRICA" o sistema deverá verificar se há variação de quantidades na ordem.
+                3 - Caso não haja variação de quantidade a ordem deverá ser direcinada para o fluxo, 
+                    "APROVADO COM JUSTIFICATIVA SETOR CUSTOS".
+                *******************************************************************************************************/
+                SELECT  
+                        Top 1   
+                        Acao = MAX(FAIXAS.Ação),
+                        ORDEM = VALORES.ORDEM,
+                        FAIXAS.Outcome,
+                        Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM PRODDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
+                        VARIACAO_IMXIC				= MAX(ABS(VALORES.VARIACAO_IMXIC)),    
+                        LIMITE_VARIACAO_IMXIC		= LIMITE.VARIACAO_IMXIC,
+
+                        VARIACAO_QTD_TOTAL			= MAX(VAR_QTD_TOTAL),
+                        LIMITE_VARIACAO_MAT_QTD		= LIMITE.VAR_MAT_QTD,
+
+                        VARIACAO_VALOR_REF_IM		= MAX(VAR_VALOR_REF_IM),
+                        LIMITE_VARIACAO_MAT_VLR		= LIMITE.VAR_MAT_VLR,
+
+                        VARIACAO_PERCENT			= MAX(VAR_PERCENT),				
+                        LIMITE_VARIACAO_HRS_VLR		= LIMITE.VAR_HRS_VLR,
+
+                        ERRO_CRITICO				= MAX(ERRO_CRITICO)
+
+                    FROM  
+                            PRODDTA.FNML481 VALORES,
+                            PRODDTA.FNML481L FAIXAS
+                            LEFT JOIN 
+                            PRODDTA.FNML481L LIMITE ON
+                            LIMITE.AÇÃO IN ('1') AND
+                            LIMITE.Outcome = FAIXAS.Outcome
+
+                    WHERE	             
+                            VALORES.SEQ_KEY = {SEQ_KEY}
+                            AND  FAIXAS.Outcome = 'REQUER JUSTIFICATIVA FABRICA'       
+                    GROUP BY 
+                            FAIXAS.Outcome,
+                            VALORES.ORDEM,
+                            LIMITE.VARIACAO_IMXIC,
+                            LIMITE.VAR_MAT_QTD,
+                            LIMITE.VAR_MAT_VLR,
+                            LIMITE.VAR_HRS_VLR
+                    HAVING 
+                            (MAX(VAR_QTD_TOTAL) >= LIMITE.VAR_MAT_QTD AND MAX(VAR_VALOR_REF_IM) >= LIMITE.VAR_MAT_VLR) --Variação de Quantidade só deve ser considerada se for acompanhada de variação de valor.
+                            OR 		
+                             MAX(VAR_PERCENT) >= LIMITE.VAR_HRS_VLR --Quantidades de horas que repercurtiram em variação de valor.
+                """
+        engine = self.cria_Conn()
+        if engine:
+            df = pd.read_sql(query, engine)
+            engine.dispose()
+            return df
+        else:
+            return None
+
+
+
+
     def extrair_dados(self, SEQ_KEY):
         query = f"""
         SELECT 
             SEQ_KEY, ORDEM, VARIACAO_IMXIC = ABS(VARIACAO_IMXIC), DIF_CUSTO_P_x_R, MAT_DIF_PERCENTUAL, 
             TAXA_MAQUINA_FIXA, TAXA_MO_FIXA, TAXA_FIXA_VAR_MO, MO_VALOR, HR_MAQ_VALOR, 
             HR_EXC_VLR, HR_CONFIG_VLR, MO_VARIACAO, EXTERNA_OPERACAO 
-        FROM  CRPDTA.FNML481
+        FROM  PRODDTA.FNML481
         WHERE SEQ_KEY = {SEQ_KEY}
         ORDER BY ORDEM, SEQ_KEY
         """
@@ -236,7 +300,7 @@ class Analise:
                     Acao = MAX(FAIXAS.Ação),
                     ORDEM = VALORES.ORDEM,
                     FAIXAS.Outcome,
-                    Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM CRPDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
+                    Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM PRODDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
                     VARIACAO_IMXIC        = MAX(ABS(VALORES.VARIACAO_IMXIC)),    
                     LIMITE_VARIACAO_IMXIC = LIMITE.VARIACAO_IMXIC,
                     DIF_CUSTO_P_x_R        = MAX(ABS(VALORES.DIF_CUSTO_P_x_R)) ,
@@ -264,28 +328,28 @@ class Analise:
                     VAR_EM_REAIS        = MAX(ABS(VALORES.VAR_EM_REAIS)),
                     LIMITE_VAR_EM_REAIS = LIMITE.VAR_EM_REAIS 
                 FROM  
-                        CRPDTA.FNML481 VALORES,
-                        CRPDTA.FNML481L FAIXAS
+                        PRODDTA.FNML481 VALORES,
+                        PRODDTA.FNML481L FAIXAS
                         LEFT JOIN 
-                        CRPDTA.FNML481L LIMITE ON
+                        PRODDTA.FNML481L LIMITE ON
                         LIMITE.AÇÃO IN ('1','3') AND
                         LIMITE.Outcome = FAIXAS.Outcome
 
                 WHERE
                     (
-                    ABS(VALORES.VARIACAO_IMXIC)            >    FAIXAS.VARIACAO_IMXIC OR 
+                    ABS(VALORES.VARIACAO_IMXIC)         >    FAIXAS.VARIACAO_IMXIC OR 
                     ABS(VALORES.DIF_CUSTO_P_x_R)        >    FAIXAS.DIF_CUSTO_P_x_R OR
-                    ABS(VALORES.MAT_DIF_PERCENTUAL)      >    FAIXAS.MAT_DIF_PERCENTUAL OR
-                    ABS(VALORES.TAXA_MAQUINA_FIXA)        >    FAIXAS.TAXA_MAQUINA_FIXA OR
-                    ABS(VALORES.TAXA_MO_FIXA)            >    FAIXAS.TAXA_MO_FIXA OR
-                    ABS(VALORES.TAXA_FIXA_VAR_MO)        >    FAIXAS.TAXA_FIXA_VAR_MO OR
-                    ABS(VALORES.MO_VALOR)                >    FAIXAS.MO_VALOR OR
-                    ABS(VALORES.HR_MAQ_VALOR)            >    FAIXAS.HR_MAQ_VALOR OR
-                    ABS(VALORES.HR_EXC_VLR)                >    FAIXAS.HR_EXC_VLR OR
-                    ABS(VALORES.HR_CONFIG_VLR)            >    FAIXAS.HR_CONFIG_VLR OR
+                    ABS(VALORES.MAT_DIF_PERCENTUAL)     >    FAIXAS.MAT_DIF_PERCENTUAL OR
+                    ABS(VALORES.TAXA_MAQUINA_FIXA)      >    FAIXAS.TAXA_MAQUINA_FIXA OR
+                    ABS(VALORES.TAXA_MO_FIXA)           >    FAIXAS.TAXA_MO_FIXA OR
+                    ABS(VALORES.TAXA_FIXA_VAR_MO)       >    FAIXAS.TAXA_FIXA_VAR_MO OR
+                    ABS(VALORES.MO_VALOR)               >    FAIXAS.MO_VALOR OR
+                    ABS(VALORES.HR_MAQ_VALOR)           >    FAIXAS.HR_MAQ_VALOR OR
+                    ABS(VALORES.HR_EXC_VLR)             >    FAIXAS.HR_EXC_VLR OR
+                    ABS(VALORES.HR_CONFIG_VLR)          >    FAIXAS.HR_CONFIG_VLR OR
                     ABS(VALORES.MO_VARIACAO)            >    FAIXAS.MO_VARIACAO OR
-                    ABS(VALORES.EXTERNA_OPERACAO)        >    FAIXAS.EXTERNA_OPERACAO OR
-                    ABS(VALORES.VAR_EM_REAIS)            >    FAIXAS.VAR_EM_REAIS
+                    ABS(VALORES.EXTERNA_OPERACAO)       >    FAIXAS.EXTERNA_OPERACAO OR
+                    ABS(VALORES.VAR_EM_REAIS)           >    FAIXAS.VAR_EM_REAIS
                     )
                     AND  VALORES.SEQ_KEY = {SEQ_KEY}
                     AND  FAIXAS.Outcome = '{predict}'       

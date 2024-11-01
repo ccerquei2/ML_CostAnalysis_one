@@ -82,6 +82,8 @@
 # Maquina Granado - Projeto ML_CostAnalysis3
 # pyinstaller --onedir --name AI_WO_Approval --hidden-import=embedchain --hidden-import=importlib_metadata --hidden-import=sklearn.ensemble._forest --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis_3\.venv\Lib\site-packages\embedchain-0.1.110.dist-info;embedchain-0.1.110.dist-info" --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis3\crewai\translations\en.json;crewai/translations" --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis3\best_random_forest_model.joblib;." main.py
 
+# 412931
+
 # ############################################################################################
 # # Avalia se Ordem Segue para aprovação
 # # Ação	Descriçao_Ação
@@ -133,6 +135,7 @@ def main(seq_key, justificativa, groq_model):
     json_avalia_limites = json.loads(json_avalia_limites_str)
 
     decisao_aprovar = (json_avalia_limites[0]["Acao"])
+
     print(decisao_aprovar)
 
 
@@ -148,11 +151,28 @@ def main(seq_key, justificativa, groq_model):
                                            '')
 
     else:
+        #############################################################################################################
+        # Adicionar Tratamento Novo Ricardo Stoeterau:
+        # Se Predição solicita Justificativa da Fabrica, fluxo deverá
+        # Verificar se a variação está relacionada a  quantidade de materia prima ou quantidade de hora
+        #############################################################################################################
+        if predicao == 'REQUER JUSTIFICATIVA FABRICA':
+            verifica_erro_qtd = []
+            verifica_erro_qtd = classificaWo.justificativa_fabrica(seq_key)
+            if verifica_erro_qtd is None or verifica_erro_qtd.empty:
+                # Caso variações de Quantidade estejam abaixo das faixas para requerer a justificativa da fabrica
+                # o fluxo deve ser direcionado para 'APROVADO COM JUSTIFICATIVA SETOR CUSTOS'
+                predicao = 'APROVADO COM JUSTIFICATIVA SETOR CUSTOS'
+                decisao_aprovar = -2
+
+
+
         if predicao == 'APROVADO COM JUSTIFICATIVA SETOR CUSTOS':
             try_approve = Agents_PipeLine.PipeLineCoastJustify()
             # try_approve.cost_approval_decision(df, decisao_aprovar, json_avalia_limites_str)
             try_approve.execute_with_retries2(df, '', decisao_aprovar, json_avalia_limites_str,None)
         else:
+
             if justificativa == None or justificativa == '':
                 try_approve = Agents_PipeLine.PipeLineCoastJustify()
                 try_approve.insert_approval_result(seq_key,
@@ -164,6 +184,8 @@ def main(seq_key, justificativa, groq_model):
                                                    '')
                 print('A analise da ordem requer uma Justificativa Plausivel da Fabrica para as Variações Observadas')
             else:
+
+
                 fab_justificativa = justificativa if justificativa else Analise_WO().buscar_justificativa_fabrica(seq_key)
                 print(fab_justificativa)
                 print(resultado)
