@@ -7,8 +7,8 @@
 #
 # class Analise:
 #     def __init__(self):
-#         self.server = 'ENTERPRISE'
-#         self.database = 'JDE_PRODUCTION'
+#         self.server = 'DBDEV'
+#         self.database = 'JDE_CRP'
 #         self.username = 'consultas_diretas'  # Substitua com seu usuário
 #         self.password = 'c_diretas'  # Substitua com sua senha
 #
@@ -30,7 +30,7 @@
 #             SEQ_KEY, ORDEM, VARIACAO_IMXIC = ABS(VARIACAO_IMXIC), DIF_CUSTO_P_x_R, MAT_DIF_PERCENTUAL,
 #             TAXA_MAQUINA_FIXA, TAXA_MO_FIXA, TAXA_FIXA_VAR_MO, MO_VALOR, HR_MAQ_VALOR,
 #             HR_EXC_VLR, HR_CONFIG_VLR, MO_VARIACAO, EXTERNA_OPERACAO
-#         FROM  PRODDTA.FNML481
+#         FROM  CRPDTA.FNML481
 #         WHERE SEQ_KEY = {SEQ_KEY}
 #         ORDER BY ORDEM, SEQ_KEY
 #         """
@@ -48,7 +48,7 @@
 #                     Acao = MAX(FAIXAS.Ação),
 #                     ORDEM = VALORES.ORDEM,
 #                     FAIXAS.Outcome,
-#                     Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM PRODDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
+#                     Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM CRPDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
 #                     VARIACAO_IMXIC        = MAX(ABS(VALORES.VARIACAO_IMXIC)),
 #                     LIMITE_VARIACAO_IMXIC = LIMITE.VARIACAO_IMXIC,
 #                     DIF_CUSTO_P_x_R        = MAX(ABS(VALORES.DIF_CUSTO_P_x_R)) ,
@@ -76,10 +76,10 @@
 #                     VAR_EM_REAIS        = MAX(ABS(VALORES.VAR_EM_REAIS)),
 #                     LIMITE_VAR_EM_REAIS = LIMITE.VAR_EM_REAIS
 #                 FROM
-#                         PRODDTA.FNML481 VALORES,
-#                         PRODDTA.FNML481L FAIXAS
+#                         CRPDTA.FNML481 VALORES,
+#                         CRPDTA.FNML481L FAIXAS
 #                         LEFT JOIN
-#                         PRODDTA.FNML481L LIMITE ON
+#                         CRPDTA.FNML481L LIMITE ON
 #                         LIMITE.AÇÃO IN ('1','3') AND
 #                         LIMITE.Outcome = FAIXAS.Outcome
 #
@@ -194,8 +194,8 @@ import json
 
 class Analise:
     def __init__(self):
-        self.server = 'ENTERPRISE'
-        self.database = 'JDE_PRODUCTION'
+        self.server = 'DBDEV'
+        self.database = 'JDE_CRP'
         self.username = 'consultas_diretas'  # Substitua com seu usuário
         self.password = 'c_diretas'  # Substitua com sua senha
         self.root_path = os.path.dirname(os.path.abspath(__file__))  # Caminho da pasta raiz do executável
@@ -227,7 +227,7 @@ class Analise:
                         Acao = MAX(FAIXAS.Ação),
                         ORDEM = VALORES.ORDEM,
                         FAIXAS.Outcome,
-                        Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM PRODDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
+                        Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM CRPDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
                         VARIACAO_IMXIC				= MAX(ABS(VALORES.VARIACAO_IMXIC)),    
                         LIMITE_VARIACAO_IMXIC		= LIMITE.VARIACAO_IMXIC,
 
@@ -243,10 +243,10 @@ class Analise:
                         ERRO_CRITICO				= MAX(ERRO_CRITICO)
 
                     FROM  
-                            PRODDTA.FNML481 VALORES,
-                            PRODDTA.FNML481L FAIXAS
+                            CRPDTA.FNML481 VALORES,
+                            CRPDTA.FNML481L FAIXAS
                             LEFT JOIN 
-                            PRODDTA.FNML481L LIMITE ON
+                            CRPDTA.FNML481L LIMITE ON
                             LIMITE.AÇÃO IN ('1') AND
                             LIMITE.Outcome = FAIXAS.Outcome
 
@@ -276,13 +276,14 @@ class Analise:
 
 
 
+
     def extrair_dados(self, SEQ_KEY):
         query = f"""
         SELECT 
             SEQ_KEY, ORDEM, VARIACAO_IMXIC = ABS(VARIACAO_IMXIC), DIF_CUSTO_P_x_R, MAT_DIF_PERCENTUAL, 
             TAXA_MAQUINA_FIXA, TAXA_MO_FIXA, TAXA_FIXA_VAR_MO, MO_VALOR, HR_MAQ_VALOR, 
             HR_EXC_VLR, HR_CONFIG_VLR, MO_VARIACAO, EXTERNA_OPERACAO 
-        FROM  PRODDTA.FNML481
+        FROM  CRPDTA.FNML481
         WHERE SEQ_KEY = {SEQ_KEY}
         ORDER BY ORDEM, SEQ_KEY
         """
@@ -294,13 +295,46 @@ class Analise:
         else:
             return None
 
+
+
+
+    def extrair_dados_qtd(self, SEQ_KEY):
+        query = f"""
+                    SELECT 
+                            [Seq_Key]							= A.SEQ_KEY,
+                            [Ordem]								= A.ORDEM,
+                            [Variação_Quantidade]				= ROUND(A.VAR_QTD_TOTAL*100,2),
+                            [Variação_Valor_Total_Quantidade]	= ROUND(A.VAR_VALOR_REF_IM*100,2),
+                            [Diferença_Hora_Maquina]			= B.DIF_HR_MAQUINA,	
+                            [Diferença_Hora_Execução]			= B.DIF_HR_EXECUCAO,	
+                            [Diferença_Hora_Configuração]		= B.DIF_HR_CONFIG,
+                            [Variação_Valor_Total_Horas]		= ROUND(B.VAR_PERCENT*100,2)
+                    FROM 
+                        CRPDTA.FNML48FB A WITH(NOLOCK)   
+                    INNER JOIN 
+                        CRPDTA.FNML48CB B WITH(NOLOCK)  ON 
+                        A.SEQ_KEY = B.SEQ_KEY AND 
+                        A.ORDEM = B.ORDEM  
+                    WHERE 
+                        A.SEQ_KEY = {SEQ_KEY}
+                """
+        engine = self.cria_Conn()
+        if engine:
+            df = pd.read_sql(query, engine)
+            engine.dispose()
+            return df
+        else:
+            return None
+
+
+
     def avalia_faixas_aprovacao(self, SEQ_KEY, predict):
         sql = f"""        
             SELECT     
                     Acao = MAX(FAIXAS.Ação),
                     ORDEM = VALORES.ORDEM,
                     FAIXAS.Outcome,
-                    Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM PRODDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
+                    Descriçao_Ação = (SELECT TOP 1 DESCFAIXAS.Descriçao_Ação FROM CRPDTA.FNML481L DESCFAIXAS WHERE MAX(FAIXAS.Ação) = DESCFAIXAS.Ação),
                     VARIACAO_IMXIC        = MAX(ABS(VALORES.VARIACAO_IMXIC)),    
                     LIMITE_VARIACAO_IMXIC = LIMITE.VARIACAO_IMXIC,
                     DIF_CUSTO_P_x_R        = MAX(ABS(VALORES.DIF_CUSTO_P_x_R)) ,
@@ -328,10 +362,10 @@ class Analise:
                     VAR_EM_REAIS        = MAX(ABS(VALORES.VAR_EM_REAIS)),
                     LIMITE_VAR_EM_REAIS = LIMITE.VAR_EM_REAIS 
                 FROM  
-                        PRODDTA.FNML481 VALORES,
-                        PRODDTA.FNML481L FAIXAS
+                        CRPDTA.FNML481 VALORES,
+                        CRPDTA.FNML481L FAIXAS
                         LEFT JOIN 
-                        PRODDTA.FNML481L LIMITE ON
+                        CRPDTA.FNML481L LIMITE ON
                         LIMITE.AÇÃO IN ('1','3') AND
                         LIMITE.Outcome = FAIXAS.Outcome
 

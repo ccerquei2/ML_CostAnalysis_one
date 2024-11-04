@@ -59,10 +59,10 @@
 
 # git init
 # git add *
-# git commit -m "commit inicial2"
+# git commit -m "commit inicial01_11"
 # git remote add origin https://github.com/ccerquei2/ML_CostAnalysis_one.git
-# git branch -M main
-# git push -u origin main
+# git branch -M main8
+# git push -u origin main8
 #
 
 # C:\Users\ccerq\OneDrive\Documentos\Python Scripts\AIGroqAgente
@@ -100,10 +100,13 @@ import Classify_WorkOrder
 from dotenv import load_dotenv
 load_dotenv()
 import json
-
+import os
+from Appove_WO import ApproveWorkOrder
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="__init__")
+
+environment = 'PY'
 
 class Analise_WO:
     def buscar_justificativa_fabrica(self, SEQ_KEY):
@@ -118,6 +121,7 @@ class Analise_WO:
 def main(seq_key, justificativa, groq_model):
     classificaWo = Classify_WorkOrder.Analise()
     df = classificaWo.extrair_dados(seq_key)
+    df_qtd = classificaWo.extrair_dados_qtd(seq_key)
 
     predicao = ''
     resultado = ''
@@ -138,6 +142,7 @@ def main(seq_key, justificativa, groq_model):
 
     print(decisao_aprovar)
 
+    BSSVApprove = ApproveWorkOrder()
 
     if decisao_aprovar == 1 or decisao_aprovar == 3:
         print('Um ou mais valores extrapolaram os limites de aprovação via ''Agentes AI'', Segue detalhamento:\n', json_avalia_limites_str)
@@ -170,7 +175,14 @@ def main(seq_key, justificativa, groq_model):
         if predicao == 'APROVADO COM JUSTIFICATIVA SETOR CUSTOS':
             try_approve = Agents_PipeLine.PipeLineCoastJustify()
             # try_approve.cost_approval_decision(df, decisao_aprovar, json_avalia_limites_str)
-            try_approve.execute_with_retries2(df, '', decisao_aprovar, json_avalia_limites_str,None)
+            result =  try_approve.execute_with_retries2(df, '', decisao_aprovar, json_avalia_limites_str,None)
+
+            if result[1] == 'Decisão de Validação: Validado':
+                return_approve = BSSVApprove.ApproveOrderJDE(environment, df['ORDEM'].iloc[0])
+                print(return_approve)
+
+            os._exit(1)
+
         else:
 
             if justificativa == None or justificativa == '':
@@ -183,6 +195,7 @@ def main(seq_key, justificativa, groq_model):
                                                    'Decisão de Validação: Não Validado',
                                                    '')
                 print('A analise da ordem requer uma Justificativa Plausivel da Fabrica para as Variações Observadas')
+                os._exit(1)
             else:
 
 
@@ -192,8 +205,24 @@ def main(seq_key, justificativa, groq_model):
 
                 try_approve = Agents_PipeLine.PipeLineCoastJustify()
                 # try_approve.approval_decision(df, fab_justificativa, decisao_aprovar, json_avalia_limites_str)
-                try_approve.execute_with_retries2(df, fab_justificativa, decisao_aprovar, json_avalia_limites_str,
-                                                  groq_model)
+                # try_approve.execute_with_retries2(df, fab_justificativa, decisao_aprovar, json_avalia_limites_str,
+                #                                   groq_model)
+
+                # try_approve.approval_decision_qtd(df_qtd, fab_justificativa, decisao_aprovar, 0, json_avalia_limites_str,
+                #                                   groq_model)
+
+                result = try_approve.execute_with_retries2(df_qtd, fab_justificativa, decisao_aprovar, json_avalia_limites_str, groq_model)
+                # print(result[1])
+
+                if result[1] == 'Decisão de Validação: Validado':
+                    return_approve = BSSVApprove.ApproveOrderJDE(environment, df['ORDEM'].iloc[0])
+                    print(return_approve)
+
+                os._exit(1)
+
+
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Processar uma ordem de produção.')

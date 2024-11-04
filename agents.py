@@ -59,14 +59,15 @@ class ProductionOrderAgents():
 
                 Instruções:
                 1. Leia cuidadosamente a justificativa e os detalhes da variação percentual fornecidos.
-                1.1 Justificativas curtas como bla bla bla ou coisas parecidas não serão aceitas.
-                1.2 Justificativas muito longas não serão aceitas. A fabrica deve ser direta e clara em suas justificativas.
-                2 Use a ferramenta Analise de Variação para identificar as maiores variações positivas e exija que a justificativa
-                explique as maiores variações positivas.
+                1.1 Justificativas curtas que contenham bla bla bla ou coisas parecidas não serão aceitas.
+                1.2 Justificativas que contenham assuntos não relacionados ao processo fabríl não serão aceitas.
+                1.3 Justificativas muito longas não serão aceitas. A fabrica deve ser direta e clara em suas justificativas.               
+                2 Use a ferramenta Analise de Variação para identificar as variações positivas e exija que a justificativa
+                explique as variações positivas.
                 2.1 Valores negativos apontam para valores melhores que o esperado, no entanto percentuais negativos
                 acima de 0.5 requerem explicação pelo risco de representar algum erro da fabrica.
                 2.2 Determine se a justificativa está alinhada adequadamente com principais variação observadas
-                2.3 Consumos de material ou hotas elevadas devem estar relacionados com valores positivos. Incongruencias
+                2.3 Consumos de material ou horas elevadas devem estar relacionados com valores positivos. Incongruencias
                 neste quesito deve requerer nova justificativa.
                 3. justificativas que mensionam Variação positivas de Material precisam explicar o aumento do consumo de
                 material na ordem.
@@ -74,9 +75,7 @@ class ProductionOrderAgents():
                 melhoria no custo em relação ao custo padrão.
                 4. Informações dentro da justificativa que não tenham relação com o processo de produção devem direcionar
                 para uma rejeição de aprovação do custo.
-                5- Diretriz: 'Variação IM x IC' maior que 0,02 então ordem Rejeitado mas se Variação IM x IC' for menor
-                que 0,02 avaliar demais parametros de custo.
-                6. Emita sua decisão de forma clara e concisa, usando o formato abaixo:
+                5. Emita sua decisão de forma clara e concisa, usando o formato abaixo:
                     - "Decisão de Aprovação: [Aprovado/Rejeitado]"
                     - "Motivo da Decisão: [Justificativa clara e sucinta explicando o motivo da aprovação ou rejeição."
 
@@ -84,16 +83,16 @@ class ProductionOrderAgents():
                 Formato de resposta esperado:
                 - Decisão de Aprovação: [Aprovado/Rejeitado]
                 - Motivo da Decisão: [Explique brevemente a base de sua decisão, focando na relação entre a
-                justificativa e a variação percentual].
+                justificativa e a variação].
 
                 Exemplo de Resposta Ideal:
                 Decisão de Aprovação: Aprovado
-                Motivo da Decisão: A variação de custo está baixa e a justificativa para o
-                aumento do volume de pedidos está consistente com os padrões da indústria.
+                Motivo da Decisão: As variaçções de quantidade de material e quantidade de horas foram justificadas 
+                pela fábrica de forma consistente. As variações estão condizentes com os limites praticados na empresa.
                 """,
             backstory="""
                 Como Analista de Variação, sua tarefa é garantir que ordens sejam aprovadas mediante justificativas
-                condizentes com as maiores variações observadas na ordem.
+                condizentes às variações observadas na ordem.
                 """,
             verbose=True,
             llm=model_llm,
@@ -109,19 +108,19 @@ class VariationReviewerAgents():
             role="Variation Reviewer",
             goal="""
                 Objetivo: Revisar a decisão do Analista de Variação e Rejeitar a Aprovação da Ordem caso a justificativa
-                fornecida pela fábrica não explique as maiores variações positivas.               
+                fornecida pela fábrica não explique as variações positivas.               
                 
                 Instruções:
                 1. Leia a justificativa fornecida pela fábrica e a decisão do Analista de Variação.
                 2. Verifique se a justificativa é relevante e apropriada para a variação observada.
-                3. 'Variação IM x IC' maior que 0,02 então ordem Rejeitado mas se 'Variação IM x IC' for menor
-                que 0,02 avaliar demais parametros de custo.
-                4. Emita uma decisão de validação, usando o formato abaixo:
+                3. Emita uma decisão de validação, usando o formato abaixo:
                     - "Decisão de Validação: [Validado/Não Validado]"
-                    - "Motivo da Decisão: [Justificativa clara e sucinta explicando o motivo da validação ou não
+                    - "Motivo da Decisão: [Justificativa clara e sucinta explicando o motivo da validação ou não 
                     validação."
-                5. Informações dentro da justificativa que não tenham relação com o processo de produção devem direcionar
+                4. Informações dentro da justificativa que não tenham relação com o processo de produção devem direcionar 
                 para a Não Validação do custo.
+                5. A falta de justificativa para uma determinada variação positiva deve direcionar para rejeição da 
+                aprovação.
 
 
                 Formato de resposta esperado:

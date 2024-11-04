@@ -130,6 +130,32 @@
 from crewai import Task
 
 class AnalyzeVariationTask():
+
+    def analyze_variation_qtd(self, agent, order_details_qtd):
+        return Task(
+            description=f"""
+                  Analise a justificativa fornecida em relação à variação e decida sobre a aprovação.
+
+                  Detalhes das Variações relacionadas a Quantidades de Material e Quantidades de Horas:
+                  
+                  - 'Variação de Quantidade': {order_details_qtd['Variação_Quantidade']}%
+                  - 'Diferença Hora Maquina': {order_details_qtd['Diferença_Hora_Maquina']}
+                  - 'Diferença Hora Execução': {order_details_qtd['Diferença_Hora_Execução']}
+                  - 'Diferença Hora Configuração': {order_details_qtd['Diferença_Hora_Configuração']}
+                  - Justificativa da Fábrica: '{order_details_qtd['Factory_Justify']}'
+
+                  Diretrizes:
+                  - Analisar se a justificativa da Fábrica explica as variações observadas. 
+                    Caso a justificativa aborde as variações a ordem poderá se aprovada caso a justificativa não abordem 
+                    as variações a ordem não deverá ser aprovada.                 
+
+              """,
+            agent=agent,
+            expected_output="Forneça uma decisão de aprovação ou rejeição com justificativas claras para cada variação "
+                            "analisada. ",
+            async_execution=False,
+        )
+
     def analyze_variation(self, agent, order_details):
         return Task(
             description=f"""
@@ -153,7 +179,7 @@ class AnalyzeVariationTask():
 
                 Diretrizes:
                 - 'Variação IM x IC' maior que 0,02 então Não aprovar, mas se 'Variação IM x IC' for menor que
-                0,02 avaliar demais parametros de custo para decidir sobrea a aprovação.
+                0,02 avaliar demais parametros de custo para decidir sobre a aprovação.
                 - Ação Prevista como 'REQUER JUSTIFICATIVA FABRICA': Requer justificativa detalhada.
                 - Ação Prevista como 'APROVADO COM JUSTIFICATIVA SETOR CUSTOS': Aprovar a ordem com comentários sobre
                 os valores.
@@ -167,7 +193,7 @@ class AnalyzeVariationTask():
 
 
 class ReviewVariationTask():
-    def review_variation(self, agent, approval_decision, order_details):
+    def review_variation(self, agent, approval_decision, order_details_qtd):
         return Task(
             description=f"""
                 Revise a decisão de aprovação e a justificativa fornecida para garantir precisão e relevância.
@@ -177,13 +203,12 @@ class ReviewVariationTask():
                 Variações Percentuais da Ordem:
                 -  Valores Negativos igual a melhor rentabilidade
                 -  Valores Positivos igual a custo acima do esperado
-                {order_details}
+                {order_details_qtd}
 
                 Diretrizes:
                 - Verifique se a justificativa é relevante e apropriada para a variação observada.
                 - Emita uma decisão de validação com base na revisão da decisão do analista.
-                - 'Variação IM x IC' maior que 0,02 então ordem  Não Validado, mas se 'Variação IM x IC' for menor que
-                0,02 avaliar demais parametros de custo para decidir sobrea a aprovação.
+              
                 Formato de resposta esperado:
                 - Decisão de Validação: [Validado/Não Validado]
                 - Motivo da Decisão: [Explique brevemente a base de sua decisão, focando na relevância e adequação da
