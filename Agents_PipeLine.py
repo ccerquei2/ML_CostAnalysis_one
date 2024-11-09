@@ -14,6 +14,9 @@ import joblib
 import json
 import concurrent.futures
 import signal
+from sqlalchemy import create_engine
+from sqlalchemy.engine import URL
+from load_environment import ConfigLoader
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="__init__")
@@ -52,6 +55,32 @@ model1 = load_model()
 
 class PipeLineCoastJustify:
 
+    def __init__(self, environment='prod'):
+        config_loader = ConfigLoader(environment)
+        db_config = config_loader.get_database_config()
+        self.server = db_config['server']
+        self.database = db_config['database']
+        # self.username = 'consultas_diretas'
+        # self.password = 'c_diretas'
+        self.username = "usercisp"
+        self.password = "Dcfsds!245"
+        self.schema_main = db_config['schema_main']
+        self.schema_udc = db_config['schema_udc']
+        self.root_path = os.path.dirname(os.path.abspath(__file__))
+
+    def cria_Conn(self):
+        connection_string = (
+            f"DRIVER={{SQL Server}};"
+            f"SERVER={self.server};"
+            f"DATABASE={self.database};"
+            f"UID={self.username};"
+            f"PWD={self.password}"
+        )
+        connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": connection_string})
+        engine = create_engine(connection_url)
+        return engine
+
+
 
     def julian_date(self, date):
         """ Converte uma data em formato padrão para o formato Julian Date."""
@@ -62,21 +91,33 @@ class PipeLineCoastJustify:
     def insert_approval_result(self, seq_key, ordem, decisao_aprovar, agent_return, json_avalia_limites_str,
                                approval_decision, what_llm, groq_model=None):
         # Conexão com o SQL Server
+        # conn_str = (
+        #     "DRIVER={SQL Server};"
+        #     "SERVER=DBDEV;"
+        #     "DATABASE=JDE_CRP;"
+        #     "UID=usercisp;"
+        #     "PWD=Dcfsds!245"
+        #
+        # )
+        # conn = pyodbc.connect(conn_str)
+        # cursor = conn.cursor()
+
+        # Conexão com o SQL Server
         conn_str = (
-            "DRIVER={SQL Server};"
-            "SERVER=DBDEV;"
-            "DATABASE=JDE_CRP;"
+            f"DRIVER={{SQL Server}};"
+            f"SERVER={self.server};"
+            f"DATABASE={self.database};"
             "UID=usercisp;"
             "PWD=Dcfsds!245"
-
         )
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
 
+
         # Obter o próximo valor para GFN002
-        cursor.execute("""
+        cursor.execute(f"""
             SELECT ISNULL(MAX(GFN002), 0) + 1
-            FROM CRPDTA.FN31112Z
+            FROM  {self.schema_main}.FN31112Z
             WHERE GFDOCO = ?
         """, ordem)
         gfn002 = cursor.fetchone()[0]
@@ -89,8 +130,8 @@ class PipeLineCoastJustify:
         if groq_model == None: groq_model = ''
 
         # Inserir os dados na tabela
-        cursor.execute("""
-            INSERT INTO CRPDTA.FN31112Z (
+        cursor.execute(f"""
+            INSERT INTO  {self.schema_main}.FN31112Z (
                 GFN001, GFDOCO, GFN002, GFN003, GFDES1, GFNOTTE, GFANSR,
                 GFURCD, GFURDT, GFURRF, GFURAT, GFURAB, GFCFGD, GFUSER,
                 GFPID, GFUPMJ, GFTDAY

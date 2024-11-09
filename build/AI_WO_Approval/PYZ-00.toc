@@ -4,6 +4,10 @@
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis3\\Agents_PipeLine.py',
    'PYMODULE'),
+  ('Appove_WO',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\Appove_WO.py',
+   'PYMODULE'),
   ('Classify_WorkOrder',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis3\\Classify_WorkOrder.py',
@@ -271,6 +275,10 @@
   ('Cryptodome.Util.strxor',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\Cryptodome\\Util\\strxor.py',
+   'PYMODULE'),
+  ('Email',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\Email.py',
    'PYMODULE'),
   ('InquirerPy',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
@@ -13017,6 +13025,50 @@
   ('ipaddress',
    'C:\\Users\\ccerqueira\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\ipaddress.py',
    'PYMODULE'),
+  ('isodate',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\__init__.py',
+   'PYMODULE'),
+  ('isodate.duration',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\duration.py',
+   'PYMODULE'),
+  ('isodate.isodates',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\isodates.py',
+   'PYMODULE'),
+  ('isodate.isodatetime',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\isodatetime.py',
+   'PYMODULE'),
+  ('isodate.isoduration',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\isoduration.py',
+   'PYMODULE'),
+  ('isodate.isoerror',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\isoerror.py',
+   'PYMODULE'),
+  ('isodate.isostrf',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\isostrf.py',
+   'PYMODULE'),
+  ('isodate.isotime',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\isotime.py',
+   'PYMODULE'),
+  ('isodate.isotzinfo',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\isotzinfo.py',
+   'PYMODULE'),
+  ('isodate.tzinfo',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\tzinfo.py',
+   'PYMODULE'),
+  ('isodate.version',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\isodate\\version.py',
+   'PYMODULE'),
   ('jinja2',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\jinja2\\__init__.py',
@@ -24350,11 +24402,111 @@
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\langsmith\\utils.py',
    'PYMODULE'),
+  ('load_environment',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis3\\load_environment.py',
+   'PYMODULE'),
   ('logging',
    'C:\\Users\\ccerqueira\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\logging\\__init__.py',
    'PYMODULE'),
   ('logging.handlers',
    'C:\\Users\\ccerqueira\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\logging\\handlers.py',
+   'PYMODULE'),
+  ('lxml',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\__init__.py',
+   'PYMODULE'),
+  ('lxml.ElementInclude',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\ElementInclude.py',
+   'PYMODULE'),
+  ('lxml.cssselect',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\cssselect.py',
+   'PYMODULE'),
+  ('lxml.doctestcompare',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\doctestcompare.py',
+   'PYMODULE'),
+  ('lxml.html',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\__init__.py',
+   'PYMODULE'),
+  ('lxml.html.ElementSoup',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\ElementSoup.py',
+   'PYMODULE'),
+  ('lxml.html._diffcommand',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\_diffcommand.py',
+   'PYMODULE'),
+  ('lxml.html._html5builder',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\_html5builder.py',
+   'PYMODULE'),
+  ('lxml.html._setmixin',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\_setmixin.py',
+   'PYMODULE'),
+  ('lxml.html.builder',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\builder.py',
+   'PYMODULE'),
+  ('lxml.html.clean',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\clean.py',
+   'PYMODULE'),
+  ('lxml.html.defs',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\defs.py',
+   'PYMODULE'),
+  ('lxml.html.formfill',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\formfill.py',
+   'PYMODULE'),
+  ('lxml.html.html5parser',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\html5parser.py',
+   'PYMODULE'),
+  ('lxml.html.soupparser',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\soupparser.py',
+   'PYMODULE'),
+  ('lxml.html.usedoctest',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\html\\usedoctest.py',
+   'PYMODULE'),
+  ('lxml.includes',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\includes\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.extlibs',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\includes\\extlibs\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.libexslt',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\includes\\libexslt\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.libxml',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\includes\\libxml\\__init__.py',
+   'PYMODULE'),
+  ('lxml.includes.libxslt',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\includes\\libxslt\\__init__.py',
+   'PYMODULE'),
+  ('lxml.isoschematron',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\isoschematron\\__init__.py',
+   'PYMODULE'),
+  ('lxml.pyclasslookup',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\pyclasslookup.py',
+   'PYMODULE'),
+  ('lxml.usedoctest',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\lxml\\usedoctest.py',
    'PYMODULE'),
   ('lzma',
    'C:\\Users\\ccerqueira\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\lzma.py',
@@ -28868,6 +29020,34 @@
   ('platform',
    'C:\\Users\\ccerqueira\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\platform.py',
    'PYMODULE'),
+  ('platformdirs',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\platformdirs\\__init__.py',
+   'PYMODULE'),
+  ('platformdirs.android',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\platformdirs\\android.py',
+   'PYMODULE'),
+  ('platformdirs.api',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\platformdirs\\api.py',
+   'PYMODULE'),
+  ('platformdirs.macos',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\platformdirs\\macos.py',
+   'PYMODULE'),
+  ('platformdirs.unix',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\platformdirs\\unix.py',
+   'PYMODULE'),
+  ('platformdirs.version',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\platformdirs\\version.py',
+   'PYMODULE'),
+  ('platformdirs.windows',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\platformdirs\\windows.py',
+   'PYMODULE'),
   ('plistlib',
    'C:\\Users\\ccerqueira\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\plistlib.py',
    'PYMODULE'),
@@ -32268,6 +32448,10 @@
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests\\utils.py',
    'PYMODULE'),
+  ('requests_file',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_file.py',
+   'PYMODULE'),
   ('requests_oauthlib',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_oauthlib\\__init__.py',
@@ -32287,6 +32471,66 @@
   ('requests_oauthlib.oauth2_session',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_oauthlib\\oauth2_session.py',
+   'PYMODULE'),
+  ('requests_toolbelt',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\__init__.py',
+   'PYMODULE'),
+  ('requests_toolbelt._compat',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\_compat.py',
+   'PYMODULE'),
+  ('requests_toolbelt.adapters',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\adapters\\__init__.py',
+   'PYMODULE'),
+  ('requests_toolbelt.adapters.source',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\adapters\\source.py',
+   'PYMODULE'),
+  ('requests_toolbelt.adapters.ssl',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\adapters\\ssl.py',
+   'PYMODULE'),
+  ('requests_toolbelt.auth',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\auth\\__init__.py',
+   'PYMODULE'),
+  ('requests_toolbelt.auth._digest_auth_compat',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\auth\\_digest_auth_compat.py',
+   'PYMODULE'),
+  ('requests_toolbelt.auth.guess',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\auth\\guess.py',
+   'PYMODULE'),
+  ('requests_toolbelt.auth.http_proxy_digest',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\auth\\http_proxy_digest.py',
+   'PYMODULE'),
+  ('requests_toolbelt.multipart',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\multipart\\__init__.py',
+   'PYMODULE'),
+  ('requests_toolbelt.multipart.decoder',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\multipart\\decoder.py',
+   'PYMODULE'),
+  ('requests_toolbelt.multipart.encoder',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\multipart\\encoder.py',
+   'PYMODULE'),
+  ('requests_toolbelt.streaming_iterator',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\streaming_iterator.py',
+   'PYMODULE'),
+  ('requests_toolbelt.utils',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\utils\\__init__.py',
+   'PYMODULE'),
+  ('requests_toolbelt.utils.user_agent',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\requests_toolbelt\\utils\\user_agent.py',
    'PYMODULE'),
   ('rich',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
@@ -50432,6 +50676,238 @@
   ('yt_dlp.webvtt',
    'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
    'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\yt_dlp\\webvtt.py',
+   'PYMODULE'),
+  ('zeep',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\__init__.py',
+   'PYMODULE'),
+  ('zeep.cache',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\cache.py',
+   'PYMODULE'),
+  ('zeep.client',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\client.py',
+   'PYMODULE'),
+  ('zeep.exceptions',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\exceptions.py',
+   'PYMODULE'),
+  ('zeep.helpers',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\helpers.py',
+   'PYMODULE'),
+  ('zeep.loader',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\loader.py',
+   'PYMODULE'),
+  ('zeep.ns',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\ns.py',
+   'PYMODULE'),
+  ('zeep.plugins',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\plugins.py',
+   'PYMODULE'),
+  ('zeep.proxy',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\proxy.py',
+   'PYMODULE'),
+  ('zeep.settings',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\settings.py',
+   'PYMODULE'),
+  ('zeep.transports',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\transports.py',
+   'PYMODULE'),
+  ('zeep.utils',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\utils.py',
+   'PYMODULE'),
+  ('zeep.wsa',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsa.py',
+   'PYMODULE'),
+  ('zeep.wsdl',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\__init__.py',
+   'PYMODULE'),
+  ('zeep.wsdl.attachments',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\attachments.py',
+   'PYMODULE'),
+  ('zeep.wsdl.bindings',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\bindings\\__init__.py',
+   'PYMODULE'),
+  ('zeep.wsdl.bindings.http',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\bindings\\http.py',
+   'PYMODULE'),
+  ('zeep.wsdl.bindings.soap',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\bindings\\soap.py',
+   'PYMODULE'),
+  ('zeep.wsdl.definitions',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\definitions.py',
+   'PYMODULE'),
+  ('zeep.wsdl.messages',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\messages\\__init__.py',
+   'PYMODULE'),
+  ('zeep.wsdl.messages.base',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\messages\\base.py',
+   'PYMODULE'),
+  ('zeep.wsdl.messages.http',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\messages\\http.py',
+   'PYMODULE'),
+  ('zeep.wsdl.messages.mime',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\messages\\mime.py',
+   'PYMODULE'),
+  ('zeep.wsdl.messages.multiref',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\messages\\multiref.py',
+   'PYMODULE'),
+  ('zeep.wsdl.messages.soap',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\messages\\soap.py',
+   'PYMODULE'),
+  ('zeep.wsdl.messages.xop',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\messages\\xop.py',
+   'PYMODULE'),
+  ('zeep.wsdl.parse',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\parse.py',
+   'PYMODULE'),
+  ('zeep.wsdl.utils',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\utils.py',
+   'PYMODULE'),
+  ('zeep.wsdl.wsdl',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsdl\\wsdl.py',
+   'PYMODULE'),
+  ('zeep.wsse',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsse\\__init__.py',
+   'PYMODULE'),
+  ('zeep.wsse.compose',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsse\\compose.py',
+   'PYMODULE'),
+  ('zeep.wsse.signature',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsse\\signature.py',
+   'PYMODULE'),
+  ('zeep.wsse.username',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsse\\username.py',
+   'PYMODULE'),
+  ('zeep.wsse.utils',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\wsse\\utils.py',
+   'PYMODULE'),
+  ('zeep.xsd',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\__init__.py',
+   'PYMODULE'),
+  ('zeep.xsd.const',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\const.py',
+   'PYMODULE'),
+  ('zeep.xsd.context',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\context.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\__init__.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements.any',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\any.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements.attribute',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\attribute.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements.base',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\base.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements.builtins',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\builtins.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements.element',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\element.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements.indicators',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\indicators.py',
+   'PYMODULE'),
+  ('zeep.xsd.elements.references',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\elements\\references.py',
+   'PYMODULE'),
+  ('zeep.xsd.printer',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\printer.py',
+   'PYMODULE'),
+  ('zeep.xsd.schema',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\schema.py',
+   'PYMODULE'),
+  ('zeep.xsd.types',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\__init__.py',
+   'PYMODULE'),
+  ('zeep.xsd.types.any',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\any.py',
+   'PYMODULE'),
+  ('zeep.xsd.types.base',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\base.py',
+   'PYMODULE'),
+  ('zeep.xsd.types.builtins',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\builtins.py',
+   'PYMODULE'),
+  ('zeep.xsd.types.collection',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\collection.py',
+   'PYMODULE'),
+  ('zeep.xsd.types.complex',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\complex.py',
+   'PYMODULE'),
+  ('zeep.xsd.types.simple',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\simple.py',
+   'PYMODULE'),
+  ('zeep.xsd.types.unresolved',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\types\\unresolved.py',
+   'PYMODULE'),
+  ('zeep.xsd.utils',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\utils.py',
+   'PYMODULE'),
+  ('zeep.xsd.valueobjects',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\valueobjects.py',
+   'PYMODULE'),
+  ('zeep.xsd.visitor',
+   'C:\\Users\\ccerq\\OneDrive\\Documentos\\Python '
+   'Scripts\\ML_CostAnalysis_3\\.venv\\Lib\\site-packages\\zeep\\xsd\\visitor.py',
    'PYMODULE'),
   ('zipfile',
    'C:\\Users\\ccerqueira\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\zipfile.py',

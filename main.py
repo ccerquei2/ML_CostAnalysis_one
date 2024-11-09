@@ -1,9 +1,13 @@
+# Last Version pyinstaller
+# pyinstaller --onedir --name AI_WO_Approval --hidden-import=embedchain --hidden-import=importlib_metadata --hidden-import=sklearn.ensemble._forest --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis_3\.venv\Lib\site-packages\embedchain-0.1.110.dist-info;embedchain-0.1.110.dist-info" --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis3\crewai\translations\en.json;crewai/translations" --add-data "C:\Users\ccerq\OneDrive\Documentos\Python Scripts\ML_CostAnalysis3\best_random_forest_model.joblib;." main.py
+
 
 # seq_key = 412931
 # # 469085  400965 # Aporva com justificativa de Custos
 # #412931    # Aprova com Justificativa da Fabrica
 # #469085  #405019 #469085  # Substitua pelo número da ordem real 405019
 # 443254 variaçao IM X IC
+
 
 # Reinstala todas as dependencias
 # pip install -r requirements.txt
@@ -59,10 +63,10 @@
 
 # git init
 # git add *
-# git commit -m "commit inicial01_11"
+# git commit -m "commit inicial04_11"
 # git remote add origin https://github.com/ccerquei2/ML_CostAnalysis_one.git
-# git branch -M main8
-# git push -u origin main8
+# git branch -M main9
+# git push -u origin main9
 #
 
 # C:\Users\ccerq\OneDrive\Documentos\Python Scripts\AIGroqAgente
@@ -102,11 +106,14 @@ load_dotenv()
 import json
 import os
 from Appove_WO import ApproveWorkOrder
+from Email import PrepareEmail
+
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="__init__")
 
-environment = 'PY'
+# environment = 'py'
+environment = 'prod'
 
 class Analise_WO:
     def buscar_justificativa_fabrica(self, SEQ_KEY):
@@ -118,10 +125,10 @@ class Analise_WO:
         else:
             return None
 
-def main(seq_key, justificativa, groq_model):
+def main(seq_key, ordem, justificativa, groq_model):
     classificaWo = Classify_WorkOrder.Analise()
-    df = classificaWo.extrair_dados(seq_key)
-    df_qtd = classificaWo.extrair_dados_qtd(seq_key)
+    df = classificaWo.extrair_dados(seq_key,ordem)
+    df_qtd = classificaWo.extrair_dados_qtd(seq_key,ordem)
 
     predicao = ''
     resultado = ''
@@ -135,7 +142,7 @@ def main(seq_key, justificativa, groq_model):
     json_avalia_limites = []
     json_avalia_limites_str = ''
 
-    json_avalia_limites_str = classificaWo.json_avalia_faixas_aprovacao(seq_key, predicao)
+    json_avalia_limites_str = classificaWo.json_avalia_faixas_aprovacao(seq_key, ordem, predicao)
     json_avalia_limites = json.loads(json_avalia_limites_str)
 
     decisao_aprovar = (json_avalia_limites[0]["Acao"])
@@ -155,6 +162,14 @@ def main(seq_key, justificativa, groq_model):
                                            'Decisão de Validação: Não Validado',
                                            '')
 
+        generate_email = PrepareEmail()
+        # text_email = generate_email.create_report_text(df_qtd, json_avalia_limites)
+        text_email = generate_email.create_report_html(df_qtd, json_avalia_limites, 'erro_faixas')
+        generate_email.send_email( f"Alerta: Ordem {int(ordem)} Excedeu os Limites de Aprovação Automática", text_email, "ccerquei2@gmail.com",
+                                      "aprovacao_ordens@granadophebo.com.br")
+        # print(text_email)
+
+
     else:
         #############################################################################################################
         # Adicionar Tratamento Novo Ricardo Stoeterau:
@@ -163,7 +178,7 @@ def main(seq_key, justificativa, groq_model):
         #############################################################################################################
         if predicao == 'REQUER JUSTIFICATIVA FABRICA':
             verifica_erro_qtd = []
-            verifica_erro_qtd = classificaWo.justificativa_fabrica(seq_key)
+            verifica_erro_qtd = classificaWo.justificativa_fabrica(seq_key, ordem)
             if verifica_erro_qtd is None or verifica_erro_qtd.empty:
                 # Caso variações de Quantidade estejam abaixo das faixas para requerer a justificativa da fabrica
                 # o fluxo deve ser direcionado para 'APROVADO COM JUSTIFICATIVA SETOR CUSTOS'
@@ -195,7 +210,16 @@ def main(seq_key, justificativa, groq_model):
                                                    'Decisão de Validação: Não Validado',
                                                    '')
                 print('A analise da ordem requer uma Justificativa Plausivel da Fabrica para as Variações Observadas')
+
+                generate_email = PrepareEmail()
+                # text_email = generate_email.create_report_text(df_qtd, json_avalia_limites)
+                text_email = generate_email.create_report_html(df_qtd, json_avalia_limites, 'erro_fab')
+                generate_email.send_email(f"Alerta: Ordem {int(ordem)} Necessita de Justificativa da Fabrica", text_email,
+                                          "ccerquei2@gmail.com",
+                                          "aprovacao_ordens@granadophebo.com.br")
+
                 os._exit(1)
+
             else:
 
 
@@ -227,8 +251,9 @@ def main(seq_key, justificativa, groq_model):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Processar uma ordem de produção.')
     parser.add_argument('SEQ_KEY', type=int, help='O identificador da ordem de produção.')
+    parser.add_argument('ORDEM', type=int, help='Numero da Ordem de Produção.')
     parser.add_argument('JUSTIFICATIVA', type=str, nargs='?', help='Justificativa para a diferença de custo da ordem.', default=None)
     parser.add_argument('GROQ_MODEL', type=str, nargs='?', help='Modelo Preferencial Groq.', default=None)
 
     args = parser.parse_args()
-    main(args.SEQ_KEY, args.JUSTIFICATIVA, args.GROQ_MODEL)
+    main(args.SEQ_KEY, args.ORDEM, args.JUSTIFICATIVA, args.GROQ_MODEL)
