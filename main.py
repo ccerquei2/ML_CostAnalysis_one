@@ -63,10 +63,10 @@
 
 # git init
 # git add *
-# git commit -m "commit inicial04_11"
+# git commit -m "commit inicial09_11"
 # git remote add origin https://github.com/ccerquei2/ML_CostAnalysis_one.git
-# git branch -M main9
-# git push -u origin main9
+# git branch -M main10
+# git push -u origin main10
 #
 
 # C:\Users\ccerq\OneDrive\Documentos\Python Scripts\AIGroqAgente
@@ -112,8 +112,9 @@ from Email import PrepareEmail
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="__init__")
 
-# environment = 'py'
-environment = 'prod'
+environment = 'py'
+# environment = 'prod'
+#def __init__(self, environment='dev'):
 
 class Analise_WO:
     def buscar_justificativa_fabrica(self, SEQ_KEY):

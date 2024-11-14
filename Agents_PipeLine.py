@@ -55,7 +55,7 @@ model1 = load_model()
 
 class PipeLineCoastJustify:
 
-    def __init__(self, environment='prod'):
+    def __init__(self, environment='dev'):
         config_loader = ConfigLoader(environment)
         db_config = config_loader.get_database_config()
         self.server = db_config['server']
@@ -90,19 +90,7 @@ class PipeLineCoastJustify:
 
     def insert_approval_result(self, seq_key, ordem, decisao_aprovar, agent_return, json_avalia_limites_str,
                                approval_decision, what_llm, groq_model=None):
-        # Conexão com o SQL Server
-        # conn_str = (
-        #     "DRIVER={SQL Server};"
-        #     "SERVER=DBDEV;"
-        #     "DATABASE=JDE_CRP;"
-        #     "UID=usercisp;"
-        #     "PWD=Dcfsds!245"
-        #
-        # )
-        # conn = pyodbc.connect(conn_str)
-        # cursor = conn.cursor()
 
-        # Conexão com o SQL Server
         conn_str = (
             f"DRIVER={{SQL Server}};"
             f"SERVER={self.server};"

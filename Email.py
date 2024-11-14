@@ -13,7 +13,7 @@ from load_environment import ConfigLoader
 
 class PrepareEmail:
 
-    def __init__(self, environment='prod'):
+    def __init__(self, environment='dev'):
         config_loader = ConfigLoader(environment)
         db_config = config_loader.get_database_config()
         self.server = db_config['server']
@@ -36,24 +36,6 @@ class PrepareEmail:
         engine = create_engine(connection_url)
         return engine
 
-    # def __init__(self):
-    #     self.server = 'DBDEV'
-    #     self.database = 'JDE_CRP'
-    #     self.username = 'consultas_diretas'  # Substitua com seu usuário
-    #     self.password = 'c_diretas'  # Substitua com sua senha
-    #     self.root_path = os.path.dirname(os.path.abspath(__file__))  # Caminho da pasta raiz do executável
-    #
-    # def cria_Conn(self):
-    #     connection_string = (
-    #         f"DRIVER={{SQL Server}};"
-    #         f"SERVER={self.server};"
-    #         f"DATABASE={self.database};"
-    #         f"UID={self.username};"
-    #         f"PWD={self.password}"
-    #     )
-    #     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": connection_string})
-    #     engine = create_engine(connection_url)
-    #     return engine
 
     def destinatarios_email(self):
         query = f"""
@@ -131,7 +113,10 @@ class PrepareEmail:
                         param_name = parameter_mapping.get(param_code, param_code)
                         param_value_str = format_number(param_value)
                         param_limit_str = format_number(param_limit)
-                        line = f"{param_name} em {param_value_str}% que ultrapassou o limite de {param_limit_str}%."
+                        if param_name == 'Variação em Reais':
+                            line = f"{param_name} em {param_value_str} que ultrapassou o limite de {param_limit_str}"
+                        else:
+                            line = f"{param_name} em {param_value_str}% que ultrapassou o limite de {param_limit_str}%."
                         exceeded_limits.append(line)
 
         # Definir a cor com base no tipo de email
@@ -201,7 +186,7 @@ class PrepareEmail:
                                     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; margin-top: 15px;">
                                         <tr>
                                             <th align="left" bgcolor="#f2f2f2" style="border: 1px solid #dddddd; padding: 10px;">Tipo</th>
-                                            <th align="left" bgcolor="#f2f2f2" style="border: 1px solid #dddddd; padding: 10px;">Variação (%)</th>
+                                            <th align="left" bgcolor="#f2f2f2" style="border: 1px solid #dddddd; padding: 10px;">Variação </th>
                                         </tr>
                                         <tr>
                                             <td style="border: 1px solid #dddddd; padding: 10px;">Máquina</td>

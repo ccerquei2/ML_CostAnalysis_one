@@ -1,26 +1,3 @@
-import os
-import configparser
-#
-# class ConfigLoader:
-#     def __init__(self, environment):
-#         self.environment = environment
-#         self.config = configparser.ConfigParser()
-#         self.load_config()
-#
-#     def load_config(self):
-#         config_file = f"config_{self.environment}.ini"
-#         if not os.path.exists(config_file):
-#             raise FileNotFoundError(f"Arquivo de configuração '{config_file}' não encontrado.")
-#         self.config.read(config_file)
-#
-#     def get_database_config(self):
-#         db_config = self.config['database']
-#         return {
-#             'server': db_config.get('server'),
-#             'database': db_config.get('database'),
-#             'schema_main': db_config.get('schema_main'),
-#             'schema_udc': db_config.get('schema_udc')
-#         }
 
 
 class ConfigLoader:
